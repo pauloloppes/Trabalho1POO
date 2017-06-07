@@ -18,6 +18,7 @@
 public class Jogo  {
     private Analisador analisador;
     private Ambiente ambienteAtual;
+    private Agente jogador;
         
     /**
      * Cria o jogo e incializa seu mapa interno.
@@ -25,6 +26,7 @@ public class Jogo  {
     public Jogo() {
         criarAmbientes();
         analisador = new Analisador();
+        jogador = new Agente(8);
     }
 
     /**
@@ -34,11 +36,16 @@ public class Jogo  {
         Ambiente fora, anfiteatro, cantina, laboratorio, escritorio;
       
         // cria os ambientes
-        fora = new Ambiente("do lado de fora da entrada principal de uma universidade");
-        anfiteatro = new Ambiente("no anfiteatro");
-        cantina = new Ambiente("na cantina do campus");
-        laboratorio = new Ambiente("no laboratorio de computacao");
-        escritorio = new Ambiente("na sala de administracao dos computadores");
+        fora = new Ambiente("do lado de fora da entrada principal de uma universidade",
+                "Descrever o ambiente");
+        anfiteatro = new Ambiente("no anfiteatro",
+                "Descrever o ambiente");
+        cantina = new Ambiente("na cantina do campus",
+                "Descrever o ambiente");
+        laboratorio = new Ambiente("no laboratorio de computacao",
+                "Descrever o ambiente");
+        escritorio = new Ambiente("na sala de administracao dos computadores",
+                "Descrever o ambiente");
         
         // inicializa as saidas dos ambientes
         fora.ajustarSaidas("leste", anfiteatro);
@@ -53,7 +60,11 @@ public class Jogo  {
         laboratorio.ajustarSaidas("leste", escritorio);
         
         escritorio.ajustarSaidas("oeste", laboratorio);
-
+        
+        // inicializa itens
+        
+        fora.ajustarItens("cigarro", 0.03, "Uma bituca de cigarro.");
+        fora.ajustarItens("lixeira", 1.7, "Uma lixeira. Está com lixo até a metade.");
 
         ambienteAtual = fora;  // o jogo comeca do lado de fora
     }
@@ -111,6 +122,11 @@ public class Jogo  {
         else if (palavraDeComando.equals("sair")) {
             querSair = sair(comando);
         }
+        else if (palavraDeComando.equals("observar")) {
+            observar(comando);
+        } else if (palavraDeComando.equals("coletar")) {
+            coletar(comando);
+        }
 
         return querSair;
     }
@@ -127,7 +143,7 @@ public class Jogo  {
         System.out.println("pela universidade.");
         System.out.println();
         System.out.println("Suas palavras de comando sao:");
-        System.out.println("   ir sair ajuda");
+        System.out.println("   "+analisador.pegarComandosValidos());
     }
 
     /** 
@@ -155,6 +171,34 @@ public class Jogo  {
             
             exibirAmbienteAtual();
         }
+    }
+    
+    /**
+     * Tenta observar algo. Se o comando for somente a palavra "observar",
+     * o jogador observa o ambiente e todos os itens contidos nele.
+     * Se o comando possuir uma segunda palavra, o jogador tenta observar
+     * o que foi passado nessa segunda palavra, seja um item ou outra coisa.
+     * @param comando Palavras de comando digitadas.
+     */
+    private void observar(Comando comando) {
+        if (comando.temSegundaPalavra()) {
+            //Se há uma segunda palavra no comando, observa o item
+            System.out.println(ambienteAtual.getItemDescricao(comando.getSegundaPalavra()));
+        } else {
+            //Se não há segunda palavra, observa o ambiente
+            System.out.println(ambienteAtual.getDescricaoLonga());
+            System.out.println("Itens: "+ambienteAtual.getItens());
+        }
+    }
+    
+    /**
+     * Tenta coletar algo. 
+     * O jogador tenta coletar o que foi passado na segunda palavra do comando,
+     * seja um item ou outra coisa.
+     * @param comando Palavras de comando digitadas.
+     */
+    private void coletar(Comando comando) {
+        
     }
 
     /** 

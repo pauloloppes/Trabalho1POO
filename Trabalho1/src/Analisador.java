@@ -60,4 +60,12 @@ public class Analisador  {
             return new Comando(null, palavra2); 
         }
     }
+    
+    /**
+     * Retorna uma string com todos os comandos válidos
+     * @return String com os comandos válidos separados por ;
+     */
+    public String pegarComandosValidos() {
+        return palavrasDeComando.getComandosValidos();
+    }
 }
