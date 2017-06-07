@@ -68,6 +68,10 @@ public class Jogo  {
 
         ambienteAtual = fora;  // o jogo comeca do lado de fora
     }
+    
+    private void teste(){
+        
+    }
 
     /**
      *  Rotina principal do jogo. Fica em loop ate terminar o jogo.
