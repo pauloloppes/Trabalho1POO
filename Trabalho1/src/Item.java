@@ -45,4 +45,12 @@ public class Item {
         return descricao;
     }
     
+    /**
+     * Retorna se o item é uma arma.
+     * @return False
+     */
+    public boolean ehArma() {
+        return false;
+    }
+    
 }

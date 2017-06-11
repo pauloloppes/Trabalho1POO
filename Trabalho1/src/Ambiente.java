@@ -20,8 +20,8 @@ public class Ambiente  {
     private String descricao;
     private String descricaoLonga;
     private HashMap<String, Ambiente> saidas;
-    //PERGUNTAR PRO JULIO SE É MELHOR USAR ARRAYLIST OU HASHMAP
     private HashMap<String, Item> itens;
+    private ArrayList<Terrorista> terroristas;
     
 
     /**
@@ -38,6 +38,7 @@ public class Ambiente  {
         this.descricaoLonga = descricaoLonga;
         saidas = new HashMap<String, Ambiente>();
         itens = new HashMap<>();
+        terroristas = new ArrayList<>();
     }
 
     /**
@@ -59,6 +60,53 @@ public class Ambiente  {
     public void ajustarItens(String nome,double peso,String descricao) {
         Item i = new Item(nome,peso,descricao);
         itens.put(nome,i);
+    }
+    
+    /**
+     * Coloca um item na lista de itens do ambiente.
+     * @param i Item
+     */
+    public void ajustarItens(Item i) {
+        itens.put(i.getNome(),i);
+    }
+    
+    /**
+     * Coloca um terrorista no ambiente
+     * Recebe como atributos um número inteiro representando a saúde do terrorista,
+     * uma matriz de itens no formato String, onde cada linha representa um item,
+     * a 1ª coluna é o nome do item, a 2ª coluna é um número real pro peso do item,
+     * e a 3ª coluna é a descrição do item
+     * O parâmetro arma é um vetor de String com a 1ª posição sendo o nome da arma,
+     * 2ª posição um número real com o peso, a 3ª posição como a descrição da arma
+     * e a 4ª posição um número inteiro com a quantidade de munição da arma
+     * @param saude Saúde do terrorista
+     * @param itens Itens que o terrorista possui.
+     * @param arma Arma que o terrorista possui
+     */
+    public void ajustarTerroristas(int saude,String itens[][],String[] arma) {
+        Terrorista t = new Terrorista(saude);
+        for (int i = 0;i < itens.length;i++) {
+            t.ajustarItens(itens[i][0], Double.parseDouble(itens[i][1]), itens[i][2]);
+        }
+        t.ajustarArma(arma[0], Double.parseDouble(arma[1]), arma[2], Integer.parseInt(arma[3]));
+        terroristas.add(t);
+    }
+    
+    /**
+     * Coloca um terrorista no ambiente
+     * Recebe como atributos um número inteiro representando a saúde do terrorista,
+     * uma matriz de itens no formato String, onde cada linha representa um item,
+     * a 1ª coluna é o nome do item, a 2ª coluna é um número real pro peso do item,
+     * e a 3ª coluna é a descrição do item
+     * @param saude Saúde do terrorista
+     * @param itens Itens que o terrorista possui.
+     */
+    public void ajustarTerroristas(int saude,String itens[][]) {
+        Terrorista t = new Terrorista(saude);
+        for (int i = 0;i < itens.length;i++) {
+            t.ajustarItens(itens[i][0], Double.parseDouble(itens[i][1]), itens[i][2]);
+        }
+        terroristas.add(t);
     }
 
     /**
@@ -112,6 +160,20 @@ public class Ambiente  {
     }
     
     /**
+     * Retorna uma string com a descrição dos terroristas no local.
+     * Se não há nenhum terrorista, retorna uma string vazia.
+     * Se há, retorna quantos terroristas incapacitados há e pula uma linha.
+     * @return 
+     */
+    public String getDescricaoTerroristas() {
+        if (terroristas.isEmpty()) {
+            return "";
+        } else {
+            return ("Ha "+terroristas.size()+" terroristas incapacitados no local.\n");
+        }
+    }
+    
+    /**
      * Retorna a descrição de um determinado item
      * @param item Nome do item em formato string
      * @return Descrição do item em formato String se o item for encontrado, null se não for encontrado
@@ -122,6 +184,106 @@ public class Ambiente  {
             return null;
         }
         return i.getDescricao();
+    }
+    
+    /**
+     * Verifica se há terroristas no ambiente.
+     * A função verifica se os terroristas do ambiente estão capacitados.
+     * Se todos estiverem incapacitados, ela retorna false.
+     * @return true se há terroristas, false se não há terroristas
+     */
+    public boolean temTerrorista() {
+        boolean res = false;
+        for (Terrorista t : terroristas) {
+            if (t.saudavel()) {
+                res = true;
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Retorna quantos terroristas saudáveis existem no ambiente.
+     * @return Quantidade de terroristas
+     */
+    public int qtdeTerroristas() {
+        int res = 0;
+        
+        for (Terrorista t : terroristas) {
+            if (t.saudavel()) {
+                res++;
+            }
+        }
+        return res;
+    }
+    
+    
+    /**
+     * Para cada terrorista saudável no ambiente, essa função recebe um dano
+     * causado por ele e um dano que será causado a ele.
+     * @param dano Vetor onde cada posição é o dano que um terrorista receberá
+     * @return Soma do dano total que os terroristas causaram
+     */
+    public int batalharTerrorista(int dano[]) {
+        int danoRecebido = 0;
+        int i = 0;
+        
+        for (Terrorista t : terroristas) {
+            if (t.saudavel()) {
+                danoRecebido += t.getDanoCausado();
+                t.receberDano(dano[i]);
+                i++;
+            }
+        }
+        
+        return danoRecebido;
+    }
+    
+    /**
+     * Coleta um item do ambiente a partir de seu nome.
+     * Se o item existir, a função retorna o item. Senão retorna null.
+     * @param nome Nome do item a ser coletado
+     * @return Item se existir, null se não existir
+     */
+    public Item coletarItem(String nome) {
+        Item i = itens.get(nome);
+        if (i != null) {
+            itens.remove(nome);
+        }
+        return i;
+    }
+    
+    /**
+     * Revista os terroristas em busca de itens.
+     * Todos os itens encontrados são colocados no ambiente.
+     * A função retorna uma string com 3 possibilidades:
+     * -"Nao ha terroristas no ambiente" caso não há nenhum terrorista
+     * -"Nenhum item encontrado" caso nenhum dos terroristas estavam carregando itens
+     * -Uma listagem de itens caso encontre algum item
+     * @return 
+     */
+    public String revistarTerroristas() {
+        if (terroristas.isEmpty()) {
+            return "Nao ha terroristas no ambiente";
+        }
+        
+        boolean revistado = false;
+        String itensRevistados = "";
+        for (Terrorista t : terroristas) {
+            ArrayList<Item> lista = t.revistarItens();
+            for (Item i : lista) {
+                revistado = true;
+                itensRevistados+=i.getNome()+"; ";
+                itens.put(i.getNome(), i);
+            }
+        }
+        
+        if (revistado) {
+            return "Itens encontrados: "+itensRevistados;
+        } else {
+            return "Nenhum item encontrado";
+        }
     }
 
 }
