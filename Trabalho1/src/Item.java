@@ -53,4 +53,12 @@ public class Item {
         return false;
     }
     
+    /**
+     * Retorna se o item é um curativo.
+     * @return False
+     */
+    public boolean ehCurativo() {
+        return false;
+    }
+    
 }

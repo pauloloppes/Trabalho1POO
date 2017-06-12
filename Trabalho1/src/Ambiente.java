@@ -108,6 +108,23 @@ public class Ambiente  {
         }
         terroristas.add(t);
     }
+    
+    /**
+     * Coloca um terrorista no ambiente
+     * Recebe como atributos um número inteiro representando a saúde do terrorista,
+     * uma matriz de itens no formato String, onde cada linha representa um item,
+     * a 1ª coluna é o nome do item, a 2ª coluna é um número real pro peso do item,
+     * e a 3ª coluna é a descrição do item
+     * @param saude Saúde do terrorista
+     * @param itens Itens que o terrorista possui.
+     */
+    public void ajustarTerroristas(int saude,ArrayList<Item> itens) {
+        Terrorista t = new Terrorista(saude);
+        for (Item i : itens) {
+            t.ajustarItens(i);
+        }
+        terroristas.add(t);
+    }
 
     /**
      * @return A descricao do ambiente.

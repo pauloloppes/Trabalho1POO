@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -67,22 +68,24 @@ public class Jogo  {
         escritorio.ajustarSaidas("oeste", laboratorio);
         
         // inicializa terroristas
-        String itens[][] = {{"chave","0.05","Uma chave pequena."},{"curativo","0.02","Um curativo."}};
-        laboratorio.ajustarTerroristas(70, itens);
-        String itens2[][] = {{"curativo","0.02","Um curativo."}};
+        String itens[][] = {{"chave","0.05","Uma chave pequena."}};
+        ArrayList<Item> itens2 = new ArrayList<>();
+        itens2.add(new Curativo("curativo",0.02,"Um curativo.",10));
+        itens2.add(new Curativo("xarope",0.02,"Um vidro de remedio.",30));
+        laboratorio.ajustarTerroristas(70, itens2);
         String arma[] = {"rifle","4","Um rifle.","50"};
-        laboratorio.ajustarTerroristas(80, itens2, arma);
+        laboratorio.ajustarTerroristas(80, itens, arma);
         String itens3[][] = {};
         laboratorio.ajustarTerroristas(70, itens3, arma);
-        cantina.ajustarTerroristas(70, itens);
-        cantina.ajustarTerroristas(80, itens2, arma);
+        cantina.ajustarTerroristas(70, itens2);
+        cantina.ajustarTerroristas(80, itens, arma);
         cantina.ajustarTerroristas(70, itens3, arma);
         
         
         // inicializa itens
         
         fora.ajustarItens("cigarro", 0.03, "Uma bituca de cigarro.");
-        fora.ajustarItens("lixeira", 1.7, "Uma lixeira. Está com lixo até a metade.");
+        fora.ajustarItens("lixeira", 6, "Uma lixeira. Está com lixo até a metade.");
 
         ambienteAtual = fora;  // o jogo comeca do lado de fora
     }
@@ -99,6 +102,7 @@ public class Jogo  {
         boolean terminado = false;
         while (! terminado) {
             Comando comando = analisador.pegarComando();
+            System.out.println();
             terminado = processarComando(comando);
         }
         System.out.println("Obrigado por jogar. Ate mais!");
@@ -150,6 +154,8 @@ public class Jogo  {
             empunhar(comando);
         } else if (palavraDeComando.equals("revistar")) {
             revistar(comando);
+        } else if (palavraDeComando.equals("usar")) {
+            usar(comando);
         } 
         
         if (tempoRestante <= 0) {
@@ -377,6 +383,9 @@ public class Jogo  {
                     System.out.print("Item nao eh uma arma.");
                     if (jogador.pegarItem(i)) {
                         System.out.println(" Voce guardou "+i.getNome()+".");
+                    } else {
+                        ambienteAtual.ajustarItens(i);;
+                        System.out.println(" Voce largou "+i.getNome()+".");
                     }
                 } else {
                     //Achou o item, e eh uma arma
@@ -420,6 +429,23 @@ public class Jogo  {
             System.out.println(ambienteAtual.revistarTerroristas());
         } else {
             System.out.println("Revistar o que?");
+        }
+    }
+    
+    /**
+     * Tenta usar um item de cura.
+     * @param comando Comando
+     */
+    private void usar(Comando comando) {
+        if (comando.temSegundaPalavra()) {
+            if (jogador.usarItem(comando.getSegundaPalavra())) {
+                tempoRestante--;
+                System.out.println("Voce foi curado. Saude atual: "+jogador.getSaude());
+            } else {
+                System.out.println("Item nao pode ser usado.");
+            }
+        } else {
+            System.out.println("Usar o que?");
         }
     }
 

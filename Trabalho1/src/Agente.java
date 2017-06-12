@@ -93,7 +93,7 @@ public class Agente {
             danoCausado += 10;
         }
         
-        System.out.println("Agente causou "+danoCausado+" de dano");
+        //System.out.println("Agente causou "+danoCausado+" de dano");
         return danoCausado;
     }
     
@@ -156,7 +156,7 @@ public class Agente {
         if (saude < 0) {
             saude = 0;
         }
-        System.out.println("Agente recebeu "+dano+" de dano, saude = "+saude);
+        //System.out.println("Agente recebeu "+dano+" de dano, saude = "+saude);
     }
     
     /**
@@ -207,5 +207,25 @@ public class Agente {
             return arma.getMunicao();
         }
         return 0;
+    }
+    
+    /**
+     * Nome do item a ser usado
+     * @param nome Nome do item
+     * @return True se conseguiu usar o item, false se não
+     */
+    public boolean usarItem (String nome) {
+        Item i = itens.get(nome);
+        if (i == null || !i.ehCurativo()) {
+            return false;
+        }
+        
+        Curativo c = (Curativo) i;
+        
+        saude += c.getPoder();
+        if (saude > saudeMax) {
+            saude = saudeMax;
+        }
+        return true;
     }
 }

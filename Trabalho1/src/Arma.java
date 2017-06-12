@@ -5,7 +5,7 @@
  */
 
 /**
- *
+ * Classe que representa armas
  * @author paulo
  */
 public class Arma extends Item {

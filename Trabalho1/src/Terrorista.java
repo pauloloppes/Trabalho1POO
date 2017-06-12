@@ -45,6 +45,14 @@ public class Terrorista {
     }
     
     /**
+     * Coloca um item na lista de itens do terrorista.
+     * @param i Item
+     */
+    public void ajustarItens(Item i) {
+        itens.put(i.getNome(), i);
+    }
+    
+    /**
      * Retorna o dano que o terrorista causa a um inimigo de acordo com sua
      * arma e munição disponível.
      * Se o terrorista não estiver empunhando uma arma ou a arma estiver sem munição,
@@ -72,7 +80,7 @@ public class Terrorista {
             arma.gastaMunicao(municao);
         }
         
-        System.out.println("Terror causou "+danoCausado+" de dano");
+        //System.out.println("Terror causou "+danoCausado+" de dano");
         return danoCausado;
     }
     
