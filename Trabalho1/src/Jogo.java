@@ -43,15 +43,15 @@ public class Jogo  {
       
         // cria os ambientes
         fora = new Ambiente("do lado de fora da entrada principal de uma universidade",
-                "Descrever o ambiente");
+                "Descrever o ambiente",0);
         anfiteatro = new Ambiente("no anfiteatro",
-                "Descrever o ambiente");
+                "Descrever o ambiente",0);
         cantina = new Ambiente("na cantina do campus",
-                "Descrever o ambiente");
+                "Descrever o ambiente",0);
         laboratorio = new Ambiente("no laboratorio de computacao",
-                "Descrever o ambiente");
+                "Descrever o ambiente",0);
         escritorio = new Ambiente("na sala de administracao dos computadores",
-                "Descrever o ambiente");
+                "Descrever o ambiente",1);
         
         // inicializa as saidas dos ambientes
         fora.ajustarSaidas("leste", anfiteatro);
@@ -68,10 +68,11 @@ public class Jogo  {
         escritorio.ajustarSaidas("oeste", laboratorio);
         
         // inicializa terroristas
-        String itens[][] = {{"chave","0.05","Uma chave pequena."}};
+        String itens[][] = {{"chave1","0.05","Uma chave pequena."}};
         ArrayList<Item> itens2 = new ArrayList<>();
         itens2.add(new Curativo("curativo",0.02,"Um curativo.",10));
         itens2.add(new Curativo("xarope",0.02,"Um vidro de remedio.",30));
+        itens2.add(new Chave("chave",0.05,"Uma chave pequena.",1));
         laboratorio.ajustarTerroristas(70, itens2);
         String arma[] = {"rifle","4","Um rifle.","50"};
         laboratorio.ajustarTerroristas(80, itens, arma);
@@ -201,25 +202,42 @@ public class Jogo  {
         // Tenta sair do ambiente atual
         Ambiente proximoAmbiente = null;
         proximoAmbiente = ambienteAtual.getAmbiente(direcao);
+        
 
         if (proximoAmbiente == null) {
             System.out.println("Nao ha passagem!");
         }
         else {
-            ambienteAtual = proximoAmbiente;
-            tempoRestante--;
+            boolean passar = true;
             
-            if (tempoRestante > 0) {
-                if (ambienteAtual.temTerrorista()) {
-                    Random r = new Random();
-                    System.out.println(batalha());
-                    tempoRestante-= 1+r.nextInt(3);
-                }
+            if (proximoAmbiente.getTranca() != 0) {
+                System.out.print("Porta esta trancada. ");
+                //Tenta achar uma chave que desbloqueia
+                if (jogador.desbloquearPorta(proximoAmbiente.getTranca())) {
+                    System.out.println("Voce a destrancou.");
+                    proximoAmbiente.destrancar();
+                } else {
+                    passar = false;
+                    System.out.println("Voce precisa da chave para entrar.");
+                }    
+            }
+            
+            if (passar) {
+                ambienteAtual = proximoAmbiente;
+                tempoRestante--;
 
-                if (jogador.saudavel() && tempoRestante > 0) {
-                    exibirAmbienteAtual();
+                if (tempoRestante > 0) {
+                    if (ambienteAtual.temTerrorista()) {
+                        Random r = new Random();
+                        System.out.println(batalha());
+                        tempoRestante-= 1+r.nextInt(3);
+                    }
+
+                    if (jogador.saudavel() && tempoRestante > 0) {
+                        exibirAmbienteAtual();
+                    }
                 }
-            } 
+            }
         }
     }
     

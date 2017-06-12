@@ -61,4 +61,12 @@ public class Item {
         return false;
     }
     
+    /**
+     * Retorna se o item é uma chave.
+     * @return False
+     */
+    public boolean ehChave() {
+        return false;
+    }
+    
 }

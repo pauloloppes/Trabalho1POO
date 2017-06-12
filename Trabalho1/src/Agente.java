@@ -228,4 +228,22 @@ public class Agente {
         }
         return true;
     }
+    
+    /**
+     * Tenta destrancar a porta com a chave que possui.
+     * A função retorna true se conseguir destrancar a porta,
+     * e false se não for possível.
+     * @param tranca A numeração da tranca da porta
+     * @return True se destrancou, false se não
+     */
+    public boolean desbloquearPorta(int tranca) {
+        Item i = itens.get("chave");
+        if (i == null || !i.ehChave()) {
+            return false;
+        }
+        
+        Chave c = (Chave) i;
+        return c.getTranca() == tranca;
+        
+    }
 }

@@ -22,6 +22,7 @@ public class Ambiente  {
     private HashMap<String, Ambiente> saidas;
     private HashMap<String, Item> itens;
     private ArrayList<Terrorista> terroristas;
+    private int tranca;
     
 
     /**
@@ -33,9 +34,10 @@ public class Ambiente  {
      * @param descricao A descricao do ambiente.
      * @param descricaoLonga A descricao longa do ambiente.
      */
-    public Ambiente(String descricao,String descricaoLonga)  {
+    public Ambiente(String descricao,String descricaoLonga,int tranca)  {
         this.descricao = descricao;
         this.descricaoLonga = descricaoLonga;
+        this.tranca = tranca;
         saidas = new HashMap<String, Ambiente>();
         itens = new HashMap<>();
         terroristas = new ArrayList<>();
@@ -301,6 +303,25 @@ public class Ambiente  {
         } else {
             return "Nenhum item encontrado";
         }
+    }
+    
+    /**
+     * Retorna qual é a numeração da tranca do ambiente.
+     * Tranca de valor 0 significa ambiente destrancado/sem porta
+     * Outros valores significa que ambiente só pode ser acessado
+     * com uma chave que possui a mesma numeração;
+     * @return Valor da tranca
+     */
+    public int getTranca() {
+        return tranca;
+    }
+    
+    /**
+     * Destranca uma porta.
+     * A tranca do ambiente passa a valer 0.
+     */
+    public void destrancar() {
+        tranca = 0;
     }
 
 }
