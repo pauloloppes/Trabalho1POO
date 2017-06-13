@@ -28,6 +28,7 @@ public class Jogo  {
         
     /**
      * Cria o jogo e incializa seu mapa interno.
+     * @param tempo Tempo limite que o jogador tem para desativar a bomba, em minutos
      */
     public Jogo(int tempo) {
         tempoRestante = tempo;
@@ -70,7 +71,7 @@ public class Jogo  {
                         + "Vozes ecoam vindo de dentro.",0);
         dexDentro = new Ambiente("dentro do departamento de exatas.",
                 "O lugar esta revirado. Gabinetes e gavetas estao abertas.\n"
-                        + "Papeis e arquivo revirados nas mesas.",0);
+                        + "Papeis e arquivos estao revirados nas mesas.",0);
         quimicaFora = new Ambiente("na frente do departamento de quimica.",
                 "Voce esta na frente de um predio bege com portas de vidro.\n"
                         + "Ha uma movimentacao no interior do predio.",0);
@@ -245,8 +246,52 @@ public class Jogo  {
         
         // inicializa itens
         
-        //fora.ajustarItens("cigarro", 0.03, "Uma bituca de cigarro.");
-        //fora.ajustarItens("lixeira", 6, "Uma lixeira. Está com lixo até a metade.");
+        portaria.ajustarItens("cigarro", 0.03, "Uma bituca de cigarro.");
+        portaria.ajustarItens("lixeira", 6, "Uma lixeira. Esta com lixo ate a metade.");
+        
+        dexDentro.ajustarItens("prova", 0.02, "Uma prova de Calculo. Nota 15/100.");
+        dexDentro.ajustarItens("calculadora", 0.5, "Uma calculadora cientifica.");
+        dexDentro.ajustarItens("caneta", 0.03, "Uma caneta comum.");
+        
+        quimicaDentro.ajustarItens("frasco", 0.1, "Um frasco vazio. Tem um cheiro estranho.");
+        quimicaDentro.ajustarItens("tubo", 0.1, "Um tubo de ensaio.");
+        quimicaDentro.ajustarItens("erlenmeyer", 0.2, "Um balao de Erlenmeyer.");
+        
+        cantina.ajustarItens("carteirinha", 0.03, "Uma carteirinha de estudante perdida.");
+        cantina.ajustarItens("salgado", 0.2, "Uma esfiha mordida.");
+        cantina.ajustarItens("copo", 0.02, "Um copo vazio. Tem cheiro de cafe.");
+        cantina.ajustarItens("guardanapo", 0.01, "Um guardanapo amassado.");
+        cantina.ajustarItens("cachorro", 2, "Um cachorro desnutrido. Ele nao liga para sua presenca.");
+        
+        caFora.ajustarItens("bracelete", 0.03, "Um bracelete artesanal de miçanga.");
+        
+        itemEspecial[0] = "3";
+        itemEspecial[1] = "remedio";
+        itemEspecial[2] = "0.5";
+        itemEspecial[3] = "Um frasco de remedio cheio.";
+        itemEspecial[4] = "50";
+        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
+        
+        itemEspecial[0] = "3";
+        itemEspecial[1] = "bandaid";
+        itemEspecial[2] = "0.02";
+        itemEspecial[3] = "Um bandaid novo.";
+        itemEspecial[4] = "10";
+        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
+        
+        itemEspecial[0] = "3";
+        itemEspecial[1] = "cicatrizante";
+        itemEspecial[2] = "0.4";
+        itemEspecial[3] = "Um frasco de liquido cicatrizante.";
+        itemEspecial[4] = "40";
+        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
+        
+        itemEspecial[0] = "3";
+        itemEspecial[1] = "pomada";
+        itemEspecial[2] = "0.25";
+        itemEspecial[3] = "Um tubo de pomada.";
+        itemEspecial[4] = "30";
+        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
 
         ambienteAtual = portaria;  // o jogo comeca na portaria
     }
@@ -274,8 +319,7 @@ public class Jogo  {
      */
     private void imprimirBoasVindas() {
         System.out.println();
-        System.out.println("Bem-vindo ao World of Zuul!");
-        System.out.println("World of Zuul eh um novo jogo de aventura, incrivelmente chato.");
+        System.out.println("Bem-vindo ao Counter-Strike: Lavras!");
         System.out.println("Digite 'ajuda' se voce precisar de ajuda.");
         System.out.println();
         
@@ -361,7 +405,7 @@ public class Jogo  {
     private void imprimirAjuda() {
         System.out.println("Plantaram uma bomba no Restaurante Universitario.");
         System.out.println("Voce precisa correr contra o tempo para desarma-la.");
-        System.out.println("Tempo restante: "+tempoRestante);
+        System.out.println("Tempo restante: "+tempoRestante+" minutos.");
         System.out.println();
         System.out.println("Suas palavras de comando sao:");
         System.out.println("   "+analisador.pegarComandosValidos());

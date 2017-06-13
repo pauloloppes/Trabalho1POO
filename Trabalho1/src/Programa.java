@@ -11,7 +11,7 @@ public class Programa {
      * @param args argumentos de linha de comando (não utilizados)
      */
     public static void main(String[] args) {
-        Jogo jogo = new Jogo(100);
+        Jogo jogo = new Jogo(60);
         jogo.jogar();
     }
 

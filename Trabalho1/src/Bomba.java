@@ -67,7 +67,6 @@ public class Bomba {
         
         if (ordemFio > 0 && ordemFio < ordem) {
             //CORTOU FIO ERRADO
-            System.out.println("cortou fio errado");
             return -1;
         }
         
