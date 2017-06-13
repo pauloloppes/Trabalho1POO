@@ -15,6 +15,10 @@ public class Terrorista {
     private HashMap<String,Item> itens;
     private Arma arma;
     
+    /**
+     * Cria um novo terrorista com a saude passada.
+     * @param saude Saude do terrorista.
+     */
     public Terrorista(int saude) {
         this.saude = saude;
         this.saudeMax = saude;
@@ -31,17 +35,6 @@ public class Terrorista {
      */
     public void ajustarArma(String nome, double peso, String descricao,int municao) {
         arma = new Arma(nome,peso,descricao,municao);
-    }
-    
-    /**
-     * Coloca um item na lista de itens do terrorista.
-     * @param nome Nome do item
-     * @param peso Peso do item em kg
-     * @param descricao Descrição do item
-     */
-    public void ajustarItens(String nome, double peso, String descricao) {
-        Item i = new Item(nome,peso,descricao);
-        itens.put(nome, i);
     }
     
     /**

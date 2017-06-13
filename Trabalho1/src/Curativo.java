@@ -11,6 +11,15 @@
 public class Curativo extends Item {
     private int poder;
     
+    /**
+     * Cria um curativo com os dados passados. Cada curativo possui um nome,
+     * um peso em kg, uma descrição detalhada para quando o jogador
+     * observar o curativo e o poder de cura.
+     * @param nome Nome do curativo
+     * @param peso Peso do curativo em kg
+     * @param descricao Descrição do curativo
+     * @param poder Poder de cura do curativo
+     */
     public Curativo(String nome, double peso, String descricao,int poder) {
         super(nome, peso, descricao);
         this.poder = poder;

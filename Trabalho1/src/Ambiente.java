@@ -23,6 +23,7 @@ public class Ambiente  {
     private HashMap<String, Item> itens;
     private ArrayList<Terrorista> terroristas;
     private int tranca;
+    private Bomba bomba;
     
 
     /**
@@ -33,11 +34,36 @@ public class Ambiente  {
      * exibida quando o jogador observar o ambiente.
      * @param descricao A descricao do ambiente.
      * @param descricaoLonga A descricao longa do ambiente.
+     * @param tranca Número da tranca do ambiente. 0 = destrancada
      */
     public Ambiente(String descricao,String descricaoLonga,int tranca)  {
         this.descricao = descricao;
         this.descricaoLonga = descricaoLonga;
         this.tranca = tranca;
+        this.bomba = null;
+        saidas = new HashMap<String, Ambiente>();
+        itens = new HashMap<>();
+        terroristas = new ArrayList<>();
+    }
+    
+    /**
+     * Cria um ambiente com a "descricao" passada. Inicialmente, ele
+     * nao tem saidas. "descricao" eh algo como "uma cozinha" ou
+     * "um jardim aberto".
+     * "descricaoLonga" eh uma descrição mais detalhada, que será
+     * exibida quando o jogador observar o ambiente.
+     * "fios" eh passado quando um ambiente possui uma bomba,
+     * e esse parametro recebe a ordem de desarme.
+     * @param descricao A descricao do ambiente.
+     * @param descricaoLonga A descricao longa do ambiente.
+     * @param tranca Número da tranca do ambiente. 0 = destrancada
+     * @param fios Se o ambiente possui uma bomba, recebe os fios.
+     */
+    public Ambiente(String descricao,String descricaoLonga,int tranca,HashMap<String,Integer> fios)  {
+        this.descricao = descricao;
+        this.descricaoLonga = descricaoLonga;
+        this.tranca = tranca;
+        this.bomba = new Bomba(fios);
         saidas = new HashMap<String, Ambiente>();
         itens = new HashMap<>();
         terroristas = new ArrayList<>();
@@ -66,65 +92,71 @@ public class Ambiente  {
     
     /**
      * Coloca um item na lista de itens do ambiente.
+     * String do item é estruturada da seguinte forma:
+     * [0]: Inteiro, tipo do item.
+     *      0 = Item comum
+     *      1 = Arma
+     *      2 = Chave
+     *      3 = Curativo
+     * [1]: String, nome do item
+     * [2]: Double, peso do item
+     * [3]: String, descrição do item
+     * [4]: Existe se o item não for comum. É o 4º argumento dos itens especiais.
      * @param i Item
      */
-    public void ajustarItens(Item i) {
-        itens.put(i.getNome(),i);
+    public void ajustarItens(String[] i) {
+        Item novo = null;
+        if (i[0].equals("0")) {
+            novo = new Item(i[1],Double.parseDouble(i[2]),i[3]);
+        } else if (i[0].equals("1")) {
+            novo = new Arma(i[1],Double.parseDouble(i[2]),i[3],Integer.parseInt(i[4]));
+        } else if (i[0].equals("2")) {
+            novo = new Chave(i[1],Double.parseDouble(i[2]),i[3],Integer.parseInt(i[4]));
+        } else if (i[0].equals("3")) {
+            novo = new Curativo(i[1],Double.parseDouble(i[2]),i[3],Integer.parseInt(i[4]));
+        }
+        
+        itens.put(i[1],novo);
     }
     
     /**
      * Coloca um terrorista no ambiente
      * Recebe como atributos um número inteiro representando a saúde do terrorista,
-     * uma matriz de itens no formato String, onde cada linha representa um item,
-     * a 1ª coluna é o nome do item, a 2ª coluna é um número real pro peso do item,
-     * e a 3ª coluna é a descrição do item
-     * O parâmetro arma é um vetor de String com a 1ª posição sendo o nome da arma,
-     * 2ª posição um número real com o peso, a 3ª posição como a descrição da arma
-     * e a 4ª posição um número inteiro com a quantidade de munição da arma
-     * @param saude Saúde do terrorista
-     * @param itens Itens que o terrorista possui.
-     * @param arma Arma que o terrorista possui
-     */
-    public void ajustarTerroristas(int saude,String itens[][],String[] arma) {
-        Terrorista t = new Terrorista(saude);
-        for (int i = 0;i < itens.length;i++) {
-            t.ajustarItens(itens[i][0], Double.parseDouble(itens[i][1]), itens[i][2]);
-        }
-        t.ajustarArma(arma[0], Double.parseDouble(arma[1]), arma[2], Integer.parseInt(arma[3]));
-        terroristas.add(t);
-    }
-    
-    /**
-     * Coloca um terrorista no ambiente
-     * Recebe como atributos um número inteiro representando a saúde do terrorista,
-     * uma matriz de itens no formato String, onde cada linha representa um item,
-     * a 1ª coluna é o nome do item, a 2ª coluna é um número real pro peso do item,
-     * e a 3ª coluna é a descrição do item
+     * uma lista de itens em formato String.
+     * String do item é estruturada da seguinte forma:
+     * [0]: Inteiro, tipo do item.
+     *      0 = Item comum
+     *      1 = Arma a ser guardada
+     *      2 = Chave
+     *      3 = Curativo
+     *      4 = Arma a ser empunhada
+     * [1]: String, nome do item
+     * [2]: Double, peso do item
+     * [3]: String, descrição do item
+     * [4]: Existe se o item não for comum. É o 4º argumento dos itens especiais.
      * @param saude Saúde do terrorista
      * @param itens Itens que o terrorista possui.
      */
-    public void ajustarTerroristas(int saude,String itens[][]) {
+    public void ajustarTerroristas(int saude,ArrayList<String[]> itens) {
         Terrorista t = new Terrorista(saude);
-        for (int i = 0;i < itens.length;i++) {
-            t.ajustarItens(itens[i][0], Double.parseDouble(itens[i][1]), itens[i][2]);
+        
+        for (String s[] : itens) {
+            Item i = null;
+            if (s[0].equals("0")) {
+                i = new Item(s[1],Double.parseDouble(s[2]),s[3]);
+            } else if (s[0].equals("1")) {
+                i = new Arma(s[1],Double.parseDouble(s[2]),s[3],Integer.parseInt(s[4]));
+            } else if (s[0].equals("2")) {
+                i = new Chave(s[1],Double.parseDouble(s[2]),s[3],Integer.parseInt(s[4]));
+            } else if (s[0].equals("3")) {
+                i = new Curativo(s[1],Double.parseDouble(s[2]),s[3],Integer.parseInt(s[4]));
+            } else if (s[0].equals("4")) {
+                t.ajustarArma(s[1],Double.parseDouble(s[2]),s[3],Integer.parseInt(s[4]));
+            }
+            if (i!= null)
+                t.ajustarItens(i);
         }
-        terroristas.add(t);
-    }
-    
-    /**
-     * Coloca um terrorista no ambiente
-     * Recebe como atributos um número inteiro representando a saúde do terrorista,
-     * uma matriz de itens no formato String, onde cada linha representa um item,
-     * a 1ª coluna é o nome do item, a 2ª coluna é um número real pro peso do item,
-     * e a 3ª coluna é a descrição do item
-     * @param saude Saúde do terrorista
-     * @param itens Itens que o terrorista possui.
-     */
-    public void ajustarTerroristas(int saude,ArrayList<Item> itens) {
-        Terrorista t = new Terrorista(saude);
-        for (Item i : itens) {
-            t.ajustarItens(i);
-        }
+
         terroristas.add(t);
     }
 
@@ -237,6 +269,14 @@ public class Ambiente  {
         return res;
     }
     
+    /**
+     * Retorna quantos terroristas, saudáveis ou incapacitados, existem no ambiente.
+     * @return Quantidade de terroristas
+     */
+    public int qtdeTotalTerroristas() {
+        return terroristas.size();
+    }
+    
     
     /**
      * Para cada terrorista saudável no ambiente, essa função recebe um dano
@@ -262,15 +302,59 @@ public class Ambiente  {
     /**
      * Coleta um item do ambiente a partir de seu nome.
      * Se o item existir, a função retorna o item. Senão retorna null.
+     * String do item é estruturada da seguinte forma:
+     * [0]: Inteiro, tipo do item.
+     *      0 = Item comum
+     *      1 = Arma
+     *      2 = Chave
+     *      3 = Curativo
+     * [1]: String, nome do item
+     * [2]: Double, peso do item
+     * [3]: String, descrição do item
+     * [4]: Existe se o item não for comum. É o 4º argumento dos itens especiais.
      * @param nome Nome do item a ser coletado
      * @return Item se existir, null se não existir
      */
-    public Item coletarItem(String nome) {
+    public String[] coletarItem(String nome) {
         Item i = itens.get(nome);
+        
+        String[] s = null;
+        
         if (i != null) {
+            if (i.ehArma()) {
+                Arma a = (Arma) i;
+                s = new String[5];
+                s[0] = "1";
+                s[1] = a.getNome();
+                s[2] = String.valueOf(a.getPeso());
+                s[3] = a.getDescricao();
+                s[4] = String.valueOf(a.getMunicao());
+            } else if (i.ehChave()) {
+                Chave c = (Chave) i;
+                s = new String[5];
+                s[0] = "2";
+                s[1] = c.getNome();
+                s[2] = String.valueOf(c.getPeso());
+                s[3] = c.getDescricao();
+                s[4] = String.valueOf(c.getTranca());
+            } else if (i.ehCurativo()) {
+                Curativo c = (Curativo) i;
+                s = new String[5];
+                s[0] = "3";
+                s[1] = c.getNome();
+                s[2] = String.valueOf(c.getPeso());
+                s[3] = c.getDescricao();
+                s[4] = String.valueOf(c.getPoder());
+            } else {
+                s = new String[4];
+                s[0] = "0";
+                s[1] = i.getNome();
+                s[2] = String.valueOf(i.getPeso());
+                s[3] = i.getDescricao();
+            }
             itens.remove(nome);
         }
-        return i;
+        return s;
     }
     
     /**
@@ -322,6 +406,43 @@ public class Ambiente  {
      */
     public void destrancar() {
         tranca = 0;
+    }
+    
+    /**
+     * Verifica se há uma bomba no ambiente.
+     * @return True se há bomba, false se não há
+     */
+    public boolean temBomba() {
+        return bomba != null;
+    }
+    
+    /**
+     * Corta um fio da bomba.
+     * Retorna um resultado de acordo com o fio cortado.
+     * Numero positivo > 1: fio foi cortado corretamente
+     * 1: Bomba foi desarmada
+     * 0: Fio já está cortado/Não aconteceu nada
+     * -1: Bomba explodiu
+     * -2: tempo foi cortado pela metade
+     * @param fio String, nome do fio
+     * @return 
+     */
+    public int cortarFio(String fio) {
+        if (bomba != null) {
+            return bomba.cortarFio(fio);
+        }
+        return 0;
+    }
+    
+    /**
+     * Retorna a descrição do estado da bomba.
+     * @return String com a descrição, null se não houver bomba
+     */
+    public String getDescricaoBomba() {
+        if (bomba != null) {
+            return bomba.getDescricao();
+        }
+        return null;
     }
 
 }

@@ -11,6 +11,15 @@
 public class Arma extends Item {
     private int municao;
     
+    /**
+     * Cria uma arma com os dados passados. Cada arma possui um nome,
+     * um peso em kg, uma descrição detalhada para quando o jogador
+     * observar a arma e o numero de munição disponível.
+     * @param nome Nome da arma
+     * @param peso Peso da arma em kg
+     * @param descricao Descrição da arma
+     * @param municao Munição da arma
+     */
     public Arma(String nome, double peso, String descricao,int municao) {
         super(nome, peso, descricao);
         this.municao = municao;
