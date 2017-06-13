@@ -99,17 +99,6 @@ public class Agente {
     }
     
     /**
-     * Retorna um item, se o agente o possuir.
-     * Retorna um item caso o item exista,
-     * ou null caso o item não exista.
-     * @param nome String com o nome do item o qual você deseja retornar
-     * @return Item se existe, ou null se não existe
-     */
-    public Item getItem(String nome) {
-        return itens.get(nome);
-    }
-    
-    /**
      * Retorna a descrição de um determinado item
      * @param item Nome do item em formato string
      * @return Descrição do item em formato String se o item for encontrado, null se não for encontrado

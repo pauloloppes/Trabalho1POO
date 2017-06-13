@@ -98,7 +98,7 @@ public class Terrorista {
     
     /**
      * Retorna uma lista com todos os itens presentes no terrorista,
-     * e os apanga.
+     * e os apaga.
      * @return Lista de itens
      */
     public ArrayList<Item> revistarItens() {

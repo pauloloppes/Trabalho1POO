@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 
 /**
- *
+ * Classe que representa uma bomba em algum ambiente.
  * @author paulo
  */
 public class Bomba {

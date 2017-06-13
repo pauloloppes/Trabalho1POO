@@ -1,6 +1,5 @@
 /**
- * Esta classe eh parte da aplicacao "World of Zuul".
- * "World of Zuul" eh um jogo de aventura muito simples, baseado em texto.  
+ * Esta classe eh parte da aplicacao "Counter-Strike: Lavras".
  * 
  * Essa classe guarda uma enumeracao de todos os comandos conhecidos do
  * jogo. Ela eh usada no reconhecimento de comandos como eles sao digitados.

@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- *  Essa eh a classe principal da aplicacao "World of Zull".
- *  "World of Zuul" eh um jogo de aventura muito simples, baseado em texto.
+ *  Essa eh a classe principal da aplicacao "Counter-Strike: Lavras".
  *  Usuarios podem caminhar em um cenario. E eh tudo! Ele realmente
  *  precisa ser estendido para fazer algo interessante!
  * 
@@ -712,6 +711,13 @@ public class Jogo  {
         }
     }
     
+    /**
+     * Tenta cortar um fio da bomba.
+     * Entra aqui quando o jogador digitar "cortar",
+     * e tenta cortar o nome do fio passado.
+     * @param comando Comando
+     * @return True se a bomba foi desarmada, false se não foi desarmada
+     */
     private boolean cortar(Comando comando) {
         if (comando.temSegundaPalavra()) {
             if (ambienteAtual.temBomba()) {
