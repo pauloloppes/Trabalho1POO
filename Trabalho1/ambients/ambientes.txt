@@ -1,0 +1,388 @@
+DEF_AMBIENT
+portaria
+0
+na portaria da universidade
+Ha uma placa de boas vindas do lado esquerdo.
+Uma multidao se aglomera atras da barreira policial.
+END_DEF
+DEF_AMBIENT
+dccFora
+0
+na frente do departamento de computacao.
+Voce esta na frente de um predio branco com portas de vidro.
+Nao ha movimento no interior. Parece estar trancado.
+END_DEF
+DEF_AMBIENT
+dccDentro
+2
+dentro do departamento de computacao.
+O departamento parece estar vazio. Nao se ouve um barulho.
+Todas as portas estao trancadas.
+END_DEF
+DEF_AMBIENT
+dexFora
+0
+na frente do departamento de exatas.
+Voce esta na frente de um predio verde de dois andares.
+Vozes ecoam vindo de dentro.
+END_DEF
+DEF_AMBIENT
+dexDentro
+0
+dentro do departamento de exatas.
+O lugar esta revirado. Gabinetes e gavetas estao abertas.
+Papeis e arquivos estao revirados nas mesas.
+END_DEF
+DEF_AMBIENT
+quimicaFora
+0
+na frente do departamento de quimica.
+Voce esta na frente de um predio bege com portas de vidro.
+Ha uma movimentacao no interior do predio.
+END_DEF
+DEF_AMBIENT
+quimicaDentro
+0
+dentro do departamento de quimica.
+O laboratorio foi usado recentemente.
+Objetos estao espalhados pelas mesas com restos de fluidos.
+END_DEF
+DEF_AMBIENT
+ruFora
+0
+na frente do restaurante universitario.
+Voce esta na frente de um predio branco com design esquisito.
+A porta de vidro aparenta estar trancada.
+END_DEF
+DEF_AMBIENT
+cantina
+0
+na cantina da universidade.
+Voce esta em uma cobertura, na frente de uma lanchonete.
+Mesas e cadeiras te cercam.
+END_DEF
+DEF_AMBIENT
+ruDentro
+1
+dentro do restaurante universitario.
+Varias mesas longas estao cercadas de cadeiras dos dois lados.
+Voce ouve uns cliques repetindo a cada segundo.
+END_DEF
+DEF_AMBIENT
+bibliotecaFora
+0
+na frente da biblioteca.
+Voce esta na frente de um predio branco enorme.
+Nao ha movimento no interior. Parece estar trancado.
+END_DEF
+DEF_AMBIENT
+bibliotecaDentro
+2
+dentro da biblioteca.
+O lugar eh repleto de estantes cheias de livros.
+Nao se ouve um barulho sequer no interior.
+END_DEF
+DEF_AMBIENT
+caFora
+0
+na frente do centro academico.
+Voce esta na frente de um predio de dois andares.
+Aparenta estar trancado.
+END_DEF
+DEF_AMBIENT
+caDentro
+3
+dentro do centro academico.
+Nao ha nenhuma movimentacao.
+Os dois andares parecem estar vazios.
+END_DEF
+DEF_AMBIENT
+bancoFora
+0
+na frente do banco.
+Voce esta na frente de um predio pequeno com paredes de vidro.
+Ha pessoas no interior.
+END_DEF
+DEF_AMBIENT
+bancoDentro
+0
+dentro do banco.
+Um vidro resistente separa as duas metades do predio.
+END_DEF
+DEF_AMBIENT
+hospitalFora
+0
+na frente do pronto socorro.
+Voce esta na frente de uma sala no andar de baixo de um predio redondo.
+Parece estar vazio.
+END_DEF
+DEF_AMBIENT
+hospitalDentro
+0
+dentro do pronto socorro.
+Nao ha ninguem no interior.
+Varios objetos estao jogados nas mesas e gavetas.
+END_DEF
+DEF_AMBIENT_BOMB
+ruDentro
+azul 3
+vermelho 2
+verde 1
+amarelo -1
+cinza -1
+preto -2
+laranja 4
+marrom -1
+END_DEF
+DEF_AMBIENT_EXITS
+portaria
+leste dccFora
+END_DEF
+DEF_AMBIENT_EXITS
+dccFora
+norte dexFora
+oeste portaria
+leste quimicaFora
+dentro dccDentro
+END_DEF
+DEF_AMBIENT_EXITS
+dccDentro
+fora dccFora
+END_DEF
+DEF_AMBIENT_EXITS
+dexFora
+dentro dexDentro
+sul dccFora
+leste cantina
+END_DEF
+DEF_AMBIENT_EXITS
+dexDentro
+fora dexFora
+END_DEF
+DEF_AMBIENT_EXITS
+quimicaFora
+dentro quimicaDentro
+oeste dccFora
+leste bibliotecaFora
+norte cantina
+END_DEF
+DEF_AMBIENT_EXITS
+quimicaDentro
+fora quimicaFora
+END_DEF
+DEF_AMBIENT_EXITS
+cantina
+oeste dexFora
+sul quimicaFora
+leste bancoFora
+norte ruFora
+END_DEF
+DEF_AMBIENT_EXITS
+ruFora
+dentro ruDentro
+sul cantina
+leste caFora
+END_DEF
+DEF_AMBIENT_EXITS
+ruDentro
+fora ruFora
+END_DEF
+DEF_AMBIENT_EXITS
+bibliotecaFora
+oeste quimicaFora
+norte bancoFora
+dentro bibliotecaDentro
+END_DEF
+DEF_AMBIENT_EXITS
+bibliotecaDentro
+fora bibliotecaFora
+END_DEF
+DEF_AMBIENT_EXITS
+bancoFora
+dentro bancoDentro
+sul bibliotecaFora
+oeste cantina
+norte caFora
+END_DEF
+DEF_AMBIENT_EXITS
+bancoDentro
+fora bancoFora
+END_DEF
+DEF_AMBIENT_EXITS
+caFora
+sul bancoFora
+oeste ruFora
+leste hospitalFora
+dentro caDentro
+END_DEF
+DEF_AMBIENT_EXITS
+caDentro
+fora caFora
+END_DEF
+DEF_AMBIENT_EXITS
+hospitalFora
+dentro hospitalDentro
+oeste caFora
+END_DEF
+DEF_AMBIENT_EXITS
+hospitalDentro
+fora hospitalFora
+END_DEF
+DEF_AMBIENT_TERROR
+bancoDentro
+70
+Chave
+chave
+0.05
+Uma chave pequena.
+1
+Curativo
+curativo
+0.01
+Um curativo.
+10
+END_DEF
+DEF_AMBIENT_TERROR
+dexDentro
+70
+Item
+papel
+0.01
+Anotado no papel: 'fio laranja, azul, vermelho, verde.'
+Curativo
+xarope
+0.5
+Um vidro de remedio.
+30
+END_DEF
+DEF_AMBIENT_TERROR
+dexDentro
+80
+ArmaAtiva
+rifle
+4
+Um rifle.
+50
+END_DEF
+DEF_AMBIENT_TERROR
+quimicaDentro
+82
+ArmaAtiva
+semi
+0.9
+Uma pistola semi-automatica.
+15
+Item
+planta
+0.02
+Planta do restaurante universitario.
+END_DEF
+DEF_AMBIENT_TERROR
+quimicaDentro
+75
+ArmaAtiva
+espingarda
+4.4
+Uma espingarda.
+25
+Curativo
+gaze
+0.02
+Um pedaço de gaze.
+20
+END_DEF
+DEF_AMBIENT_ITENS
+portaria
+Item
+cigarro
+0.03
+Uma bituca de cigarro.
+Item
+lixeira
+6
+Uma lixeira. Esta com lixo ate a metade.
+END_DEF
+DEF_AMBIENT_ITENS
+dexDentro
+Item
+prova
+0.02
+Uma prova de Calculo. Nota 15/100.
+Item
+calculadora
+0.5
+Uma calculadora cientifica.
+Item
+caneta
+0.03
+Uma caneta comum.
+END_DEF
+DEF_AMBIENT_ITENS
+quimicaDentro
+Item
+frasco
+0.1
+Um frasco vazio. Tem um cheiro estranho.
+Item
+tubo
+0.1
+Um tubo de ensaio.
+Item
+erlenmeyer
+0.2
+Um balao de Erlenmeyer.
+END_DEF
+DEF_AMBIENT_ITENS
+cantina
+Item
+carteirinha
+0.03
+Uma carteirinha de estudante perdida.
+Item
+salgado
+0.2
+Uma esfiha mordida.
+Item
+copo
+0.02
+Um copo vazio. Tem cheiro de cafe.
+Item
+guardanapo
+0.01
+Um guardanapo amassado.
+Item
+cachorro
+8
+Um cachorro desnutrido. Ele nao liga para sua presenca.
+END_DEF
+DEF_AMBIENT_ITENS
+caFora
+bracelete
+0.03
+Um bracelete artesanal de miçanga.
+END_DEF
+DEF_AMBIENT_ITENS
+hospitalDentro
+Curativo
+remedio
+0.5
+Um frasco de remedio cheio.
+50
+Curativo
+bandaid
+0.02
+Um bandaid novo.
+10
+Curativo
+cicatrizante
+0.4
+Um frasco de liquido cicatrizante.
+40
+Curativo
+pomada
+0.25
+Um tubo de pomada.
+30
+END_DEF
+DEF_AMBIENTE_ATUAL
+portaria

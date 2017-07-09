@@ -39,6 +39,8 @@ public class Arma extends Item {
      */
     public void gastaMunicao(int gasto) {
         municao -= gasto;
+        if (municao < 0) 
+            municao = 0;
     }
     
     /**

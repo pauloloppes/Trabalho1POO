@@ -28,13 +28,10 @@ public class Terrorista {
     
     /**
      * Empunha o terrorista com uma nova arma seguindo os parâmetros passados
-     * @param nome Nome da arma
-     * @param peso Peso da arma, número real
-     * @param descricao Descrição da arma
-     * @param municao Quantidade de munição, número inteiro
+     * @param a Arma nova do terrorista
      */
-    public void ajustarArma(String nome, double peso, String descricao,int municao) {
-        arma = new Arma(nome,peso,descricao,municao);
+    public void ajustarArma(Arma a) {
+        arma = a;
     }
     
     /**
@@ -49,17 +46,18 @@ public class Terrorista {
      * Retorna o dano que o terrorista causa a um inimigo de acordo com sua
      * arma e munição disponível.
      * Se o terrorista não estiver empunhando uma arma ou a arma estiver sem munição,
-     * o dano será 0. Senão, o dano será calculado de acordo com a munição
+     * o dano será entre 0 e 5. Senão, o dano será calculado de acordo com a munição
      * disponível no terrorista.
      * @return Inteiro com o dano causado
      */
     public int getDanoCausado() {
-        if (arma == null) {
-            return 0;
+        Random rand = new Random();
+        if (arma == null || arma.getMunicao() == 0) {
+            return rand.nextInt(6);
         }
         
         int danoCausado = 0;
-        Random rand = new Random();
+        
         int municao = arma.getMunicao();
         int gasto = 1+rand.nextInt(4);
         
@@ -73,7 +71,6 @@ public class Terrorista {
             arma.gastaMunicao(municao);
         }
         
-        //System.out.println("Terror causou "+danoCausado+" de dano");
         return danoCausado;
     }
     
@@ -116,6 +113,14 @@ public class Terrorista {
         itens.clear();
         
         return retorno;
+    }
+    
+    /**
+     * Retorna se o agente está empunhando uma arma no momento
+     * @return True se estiver empunhando arma, false se não
+     */
+    public boolean temArma() {
+        return arma != null;
     }
     
 }

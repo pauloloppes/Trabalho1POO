@@ -1,7 +1,12 @@
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *  Essa eh a classe principal da aplicacao "Counter-Strike: Lavras".
@@ -35,264 +40,268 @@ public class Jogo  {
         analisador = new Analisador();
         jogador = new Agente(5,100);
     }
-
+    
     /**
-     * Cria todos os ambientes e liga as saidas deles
+     * Cria uma bomba a partir de um arquivo texto.
+     * @param arq Arquivo texto a ser lido
+     * @return HashMap com os fios da bomba e seus respectivos efeitos
+     */
+    private HashMap<String, Integer> criarBomba(BufferedReader arq) {
+        HashMap<String,Integer> fios = null;
+        
+        try {
+            String leitura = arq.readLine();
+            fios = new HashMap<>();
+            while (!leitura.equals("END_DEF")) {
+                
+                String[] s = leitura.split(" ");
+                fios.put(s[0], Integer.parseInt(s[1]));
+                
+                leitura = arq.readLine();
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return fios;
+    }
+    
+    /**
+     * Cria um novo ambiente a partir de um arquivo texto.
+     * @param arq Arquivo texto a ser lido
+     * @return Ambiente criado
+     */
+    private Ambiente criarNovoAmbiente(BufferedReader arq) {
+        Ambiente a = null;
+        try {
+            String nome = arq.readLine();
+            int tranca = Integer.parseInt(arq.readLine());
+            String desc = arq.readLine();
+            String descLonga = "";
+            String leitura = arq.readLine();
+            while (!leitura.equals("END_DEF")) {
+                descLonga += leitura;
+                leitura = arq.readLine();
+                if (!leitura.equals("END_DEF"))
+                    descLonga += "\n";
+            }
+            a = new Ambiente(nome,desc,descLonga,tranca);
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return a;
+    }
+    
+    /**
+     * Ajusta as saídas de um ambiente a partir de um arquivo texto.
+     * É preciso que todos os ambientes já tenham sido criados neste ponto.
+     * @param a Ambiente que receberá as novas saídas
+     * @param arq Arquivo texto a ser lido
+     * @param ambientes HashMap com todos os ambientes criados
+     */
+    private void criarSaidas(Ambiente a,BufferedReader arq,HashMap<String,Ambiente> ambientes) {
+        try {
+            String leitura = arq.readLine();
+            while (!leitura.equals("END_DEF")) {
+                String[] s = leitura.split(" ");
+                Ambiente b = ambientes.get(s[1]);
+                if (b!= null)
+                    a.ajustarSaidas(s[0], b);
+                leitura = arq.readLine();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Cria um terrorista a partir de um arquivo texto.
+     * @param arq Arquivo texto a ser lido
+     * @return Terrorista criado
+     */
+    private Terrorista criarTerrorista(BufferedReader arq) {
+        Terrorista t = null;
+        
+        try {
+            int saude = Integer.parseInt(arq.readLine());
+            t = new Terrorista(saude);
+            String leitura = arq.readLine();
+            while (!leitura.equals("END_DEF")) {
+                if (leitura.equals("Item")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    t.ajustarItens(new Item(nome,peso,desc));
+                } else if (leitura.equals("Arma")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int municao = Integer.parseInt(arq.readLine());
+                    t.ajustarItens(new Arma(nome,peso,desc,municao));
+                } else if (leitura.equals("ArmaAtiva")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int municao = Integer.parseInt(arq.readLine());
+                    t.ajustarArma(new Arma(nome,peso,desc,municao));
+                } else if (leitura.equals("Chave")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int trava = Integer.parseInt(arq.readLine());
+                    t.ajustarItens(new Chave(nome,peso,desc,trava));
+                } else if (leitura.equals("Curativo")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int poder = Integer.parseInt(arq.readLine());
+                    t.ajustarItens(new Curativo(nome,peso,desc,poder));
+                }
+                leitura = arq.readLine();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return t;
+    }
+    
+    /**
+     * Cria os itens de um ambiente a partir de um arquivo texto.
+     * A função recebe o Ambiente e já adiciona os itens automaticamente.
+     * @param a Ambiente que receberá os itens criados
+     * @param arq Arquivo texto a ser lido
+     */
+    private void criarItensAmbiente(Ambiente a, BufferedReader arq) {
+        
+        try {
+            String leitura = arq.readLine();
+            while (!leitura.equals("END_DEF")) {
+                if (leitura.equals("Item")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    a.ajustarItens(new Item(nome,peso,desc));
+                } else if (leitura.equals("Arma")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int municao = Integer.parseInt(arq.readLine());
+                    a.ajustarItens(new Arma(nome,peso,desc,municao));
+                } else if (leitura.equals("Chave")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int trava = Integer.parseInt(arq.readLine());
+                    a.ajustarItens(new Chave(nome,peso,desc,trava));
+                } else if (leitura.equals("Curativo")) {
+                    String nome = arq.readLine();
+                    double peso = Double.parseDouble(arq.readLine());
+                    String desc = arq.readLine();
+                    int poder = Integer.parseInt(arq.readLine());
+                    a.ajustarItens(new Curativo(nome,peso,desc,poder));
+                }
+                leitura = arq.readLine();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Lê um arquivo texto até chegar no fim do bloco atual.
+     * A função é necessária quando há algum erro na hora de ler o arquivo,
+     * seja com algum ambiente que não existe, tipo de item não especificado.
+     * Ela percorre o arquivo até chegar na próxima linha marcada com END_DEF
+     * para poder iniciar um novo bloco.
+     * @param arq Arquivo texto a ser lido
+     */
+    private void lerAteEndDef(BufferedReader arq) {
+        try {
+            String leitura = arq.readLine();
+            while (!leitura.equals("END_DEF")) {
+                leitura = arq.readLine();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Cria todos os ambientes e liga as saidas deles.
+     * O método lê todas as informações de todos os ambientes a partir
+     * de um arquivo texto.
      */
     private void criarAmbientes() {
-        Ambiente portaria,dccFora,dccDentro,dexFora,dexDentro,quimicaFora,quimicaDentro,
-                cantina,ruFora,ruDentro,bibliotecaFora,bibliotecaDentro,
-                caFora,caDentro,bancoFora,bancoDentro,hospitalFora,hospitalDentro;
         
-        // cria a bomba
-        HashMap<String,Integer> fios = new HashMap<>();
-        fios.put("azul", 3);
-        fios.put("vermelho", 2);
-        fios.put("verde", 1);
-        fios.put("amarelo", -1);
-        fios.put("cinza", -1);
-        fios.put("preto", -2);
-        fios.put("laranja", 4);
-        fios.put("marrom", -1);
-      
-        // cria os ambientes
-        portaria = new Ambiente("na portaria da universidade",
-                "Ha uma placa de boas vindas do lado esquerdo.\n"
-                        + "Uma multidao se aglomera atras da barreira policial.",0);
-        dccFora = new Ambiente("na frente do departamento de computacao.",
-                "Voce esta na frente de um predio branco com portas de vidro.\n"
-                        + "Nao ha movimento no interior. Parece estar trancado.",0);
-        dccDentro = new Ambiente("dentro do departamento de computacao.",
-                "O departamento parece estar vazio. Nao se ouve um barulho.\n"
-                        + "Todas as portas estao trancadas.",2);
-        dexFora = new Ambiente("na frente do departamento de exatas.",
-                "Voce esta na frente de um predio verde de dois andares.\n"
-                        + "Vozes ecoam vindo de dentro.",0);
-        dexDentro = new Ambiente("dentro do departamento de exatas.",
-                "O lugar esta revirado. Gabinetes e gavetas estao abertas.\n"
-                        + "Papeis e arquivos estao revirados nas mesas.",0);
-        quimicaFora = new Ambiente("na frente do departamento de quimica.",
-                "Voce esta na frente de um predio bege com portas de vidro.\n"
-                        + "Ha uma movimentacao no interior do predio.",0);
-        quimicaDentro = new Ambiente("dentro do departamento de quimica.",
-                "O laboratorio foi usado recentemente.\n"
-                        + "Objetos estao espalhados pelas mesas com restos de fluidos.",0);
-        ruFora = new Ambiente("na frente do restaurante universitario.",
-                "Voce esta na frente de um predio branco com design esquisito.\n"
-                        + "A porta de vidro aparenta estar trancada.",0);
-        cantina = new Ambiente("na cantina da universidade.",
-                "Voce esta em uma cobertura, na frente de uma lanchonete.\n"
-                        + "Mesas e cadeiras te cercam.",0);
-        ruDentro = new Ambiente("dentro do restaurante universitario.",
-                "Varias mesas longas estao cercadas de cadeiras dos dois lados.\n"
-                        + "Voce ouve uns cliques repetindo a cada segundo.",1,fios);
-        bibliotecaFora = new Ambiente("na frente da biblioteca.",
-                "Voce esta na frente de um predio branco enorme.\n"
-                        + "Nao ha movimento no interior. Parece estar trancado.",0);
-        bibliotecaDentro = new Ambiente("dentro da biblioteca.",
-                "O lugar eh repleto de estantes cheias de livros.\n"
-                        + "Nao se ouve um barulho sequer no interior.\n",2);
-        caFora = new Ambiente("na frente do centro academico.",
-                "Voce esta na frente de um predio de dois andares.\n"
-                        + "Aparenta estar trancado.",0);
-        caDentro = new Ambiente("dentro do centro academico.",
-                "Nao ha nenhuma movimentacao.\n"
-                        + "Os dois andares parecem estar vazios.",3);
-        bancoFora = new Ambiente("na frente do banco.",
-                "Voce esta na frente de um predio pequeno com paredes de vidro."
-                        + "Ha pessoas no interior.",0);
-        bancoDentro = new Ambiente("dentro do banco.",
-                "Um vidro resistente separa as duas metades do predio.",0);
-        hospitalFora = new Ambiente("na frente do pronto socorro.",
-                "Voce esta na frente de uma sala no andar de baixo de um predio redondo.\n"
-                        + "Parece estar vazio.",0);
-        hospitalDentro = new Ambiente("dentro do pronto socorro.",
-                "Nao ha ninguem no interior.\n"
-                        + "Varios objetos estao jogados nas mesas e gavetas.",0);
+        HashMap<String,Ambiente> ambientes = new HashMap<>();
+        try {
+            BufferedReader arqAmbientes = new BufferedReader(new FileReader("ambients/ambientes.txt"));
+            String linha = arqAmbientes.readLine();
+            while (linha != null) {
+                if (linha.equals("DEF_AMBIENT")) {
+                    Ambiente a = criarNovoAmbiente(arqAmbientes);
+                    if (a!=null)
+                        ambientes.put(a.getNome(), a);
+                    else
+                        lerAteEndDef(arqAmbientes);
+                        
+                } else if (linha.equals("DEF_AMBIENT_BOMB")) {
+                    String nome = arqAmbientes.readLine();
+                    HashMap<String,Integer> bomba = criarBomba(arqAmbientes);
+                    if (bomba != null) {
+                        Ambiente a = ambientes.get(nome);
+                        if (a!=null)
+                            a.setBomba(bomba);
+                    } else
+                        lerAteEndDef(arqAmbientes);
+                } else if (linha.equals("DEF_AMBIENT_EXITS")) {
+                    String nome = arqAmbientes.readLine();
+                    Ambiente a = ambientes.get(nome);
+                    if (a != null)
+                        criarSaidas(a,arqAmbientes,ambientes);
+                    else
+                        lerAteEndDef(arqAmbientes);
+                } else if (linha.equals("DEF_AMBIENT_TERROR")) {
+                    String nome = arqAmbientes.readLine();
+                    Ambiente a = ambientes.get(nome);
+                    if (a != null) {
+                        Terrorista t = criarTerrorista(arqAmbientes);
+                        if (t != null)
+                            a.ajustarTerroristas(t);
+                        else
+                            lerAteEndDef(arqAmbientes);
+                    } else
+                        lerAteEndDef(arqAmbientes);
+                } else if (linha.equals("DEF_AMBIENT_ITENS")) {
+                    String nome = arqAmbientes.readLine();
+                    Ambiente a = ambientes.get(nome);
+                    if (a!=null) {
+                        criarItensAmbiente(a,arqAmbientes);
+                    } else
+                        lerAteEndDef(arqAmbientes);
+                } else if (linha.equals("DEF_AMBIENTE_ATUAL")) {
+                    String nome = arqAmbientes.readLine();
+                    Ambiente a = ambientes.get(nome);
+                    if (a!=null) {
+                        ambienteAtual = a;
+                    }
+                }
+                
+                linha = arqAmbientes.readLine();
+            }
+            
+            arqAmbientes.close();
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Arquivo nao encontrado.");
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        // inicializa as saidas dos ambientes
-        portaria.ajustarSaidas("leste", dccFora);
-        
-        dccFora.ajustarSaidas("norte", dexFora);
-        dccFora.ajustarSaidas("oeste", portaria);
-        dccFora.ajustarSaidas("leste", quimicaFora);
-        dccFora.ajustarSaidas("dentro", dccDentro);
-        dccDentro.ajustarSaidas("fora", dccFora);
-        
-        dexFora.ajustarSaidas("dentro", dexDentro);
-        dexFora.ajustarSaidas("sul", dccFora);
-        dexFora.ajustarSaidas("leste", cantina);
-        dexDentro.ajustarSaidas("fora", dexFora);
-        
-        quimicaFora.ajustarSaidas("dentro", quimicaDentro);
-        quimicaFora.ajustarSaidas("oeste", dccFora);
-        quimicaFora.ajustarSaidas("leste", bibliotecaFora);
-        quimicaFora.ajustarSaidas("norte", cantina);
-        quimicaDentro.ajustarSaidas("fora", quimicaFora);
-        
-        cantina.ajustarSaidas("oeste", dexFora);
-        cantina.ajustarSaidas("sul", quimicaFora);
-        cantina.ajustarSaidas("leste", bancoFora);
-        cantina.ajustarSaidas("norte", ruFora);
-        
-        ruFora.ajustarSaidas("dentro", ruDentro);
-        ruFora.ajustarSaidas("sul", cantina);
-        ruFora.ajustarSaidas("leste", caFora);
-        ruDentro.ajustarSaidas("fora", ruFora);
-        
-        bibliotecaFora.ajustarSaidas("oeste", quimicaFora);
-        bibliotecaFora.ajustarSaidas("norte", bancoFora);
-        bibliotecaFora.ajustarSaidas("dentro", bibliotecaDentro);
-        bibliotecaDentro.ajustarSaidas("fora", bibliotecaFora);
-        
-        bancoFora.ajustarSaidas("dentro", bancoDentro);
-        bancoFora.ajustarSaidas("sul", bibliotecaFora);
-        bancoFora.ajustarSaidas("oeste", cantina);
-        bancoFora.ajustarSaidas("norte", caFora);
-        bancoDentro.ajustarSaidas("fora", bancoFora);
-        
-        caFora.ajustarSaidas("sul", bancoFora);
-        caFora.ajustarSaidas("oeste", ruFora);
-        caFora.ajustarSaidas("leste", hospitalFora);
-        caFora.ajustarSaidas("dentro", caDentro);
-        caDentro.ajustarSaidas("fora", caFora);
-        
-        hospitalFora.ajustarSaidas("dentro", hospitalDentro);
-        hospitalFora.ajustarSaidas("oeste", caFora);
-        hospitalDentro.ajustarSaidas("fora", hospitalFora);
-        
-        // inicializa terroristas
-        ArrayList<String[]> listaItens = new ArrayList<>();
-        String[] itemNormal = new String[4];
-        String[] itemEspecial = new String[5];
-        
-        itemEspecial[0] = "2";//tipo 2: chave
-        itemEspecial[1] = "chave";//nome do item
-        itemEspecial[2] = "0.05";//peso
-        itemEspecial[3] = "Uma chave pequena.";//descricao
-        itemEspecial[4] = "1";//numero da tranca
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        itemEspecial[0] = "3";//tipo 3: curativo
-        itemEspecial[1] = "curativo";//nome
-        itemEspecial[2] = "0.01";//peso
-        itemEspecial[3] = "Um curativo.";//descricao
-        itemEspecial[4] = "10";//poder de cura
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        bancoDentro.ajustarTerroristas(70, listaItens);
-        listaItens.clear();
-        
-        itemNormal[0] = "0";//tipo 0: item normal
-        itemNormal[1] = "papel";//nome do item
-        itemNormal[2] = "0.01";//peso do item em kg
-        itemNormal[3] = "Anotado no papel: 'fio laranja, azul, vermelho, verde.'";//descricao do item
-        listaItens.add(cloneVetor(itemNormal));//clona o item e adiciona na lista
-        
-        itemEspecial[0] = "3";
-        itemEspecial[1] = "xarope";
-        itemEspecial[2] = "0.5";
-        itemEspecial[3] = "Um vidro de remedio.";
-        itemEspecial[4] = "30";
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        dexDentro.ajustarTerroristas(70, listaItens);
-        listaItens.clear();
-        
-        itemEspecial[0] = "4";
-        itemEspecial[1] = "rifle";
-        itemEspecial[2] = "4";
-        itemEspecial[3] = "Um rifle.";
-        itemEspecial[4] = "50";
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        dexDentro.ajustarTerroristas(80, listaItens);
-        listaItens.clear();
-        
-        itemEspecial[0] = "4";
-        itemEspecial[1] = "semi";
-        itemEspecial[2] = "0.9";
-        itemEspecial[3] = "Uma pistola semi-automatica.";
-        itemEspecial[4] = "15";
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        itemNormal[0] = "0";//tipo 0: item normal
-        itemNormal[1] = "planta";//nome do item
-        itemNormal[2] = "0.02";//peso do item em kg
-        itemNormal[3] = "Planta do restaurante universitario.";//descricao do item
-        listaItens.add(cloneVetor(itemNormal));//clona o item e adiciona na lista
-        
-        quimicaDentro.ajustarTerroristas(82, listaItens);
-        listaItens.clear();
-        
-        itemEspecial[0] = "4";
-        itemEspecial[1] = "espingarda";
-        itemEspecial[2] = "4.4";
-        itemEspecial[3] = "Uma espingarda.";
-        itemEspecial[4] = "25";
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        itemEspecial[0] = "3";
-        itemEspecial[1] = "gaze";
-        itemEspecial[2] = "0.02";
-        itemEspecial[3] = "Um pedaço de gaze.";
-        itemEspecial[4] = "20";
-        listaItens.add(cloneVetor(itemEspecial));
-        
-        quimicaDentro.ajustarTerroristas(75, listaItens);
-        listaItens.clear();
-        
-        
-        // inicializa itens
-        
-        portaria.ajustarItens("cigarro", 0.03, "Uma bituca de cigarro.");
-        portaria.ajustarItens("lixeira", 6, "Uma lixeira. Esta com lixo ate a metade.");
-        
-        dexDentro.ajustarItens("prova", 0.02, "Uma prova de Calculo. Nota 15/100.");
-        dexDentro.ajustarItens("calculadora", 0.5, "Uma calculadora cientifica.");
-        dexDentro.ajustarItens("caneta", 0.03, "Uma caneta comum.");
-        
-        quimicaDentro.ajustarItens("frasco", 0.1, "Um frasco vazio. Tem um cheiro estranho.");
-        quimicaDentro.ajustarItens("tubo", 0.1, "Um tubo de ensaio.");
-        quimicaDentro.ajustarItens("erlenmeyer", 0.2, "Um balao de Erlenmeyer.");
-        
-        cantina.ajustarItens("carteirinha", 0.03, "Uma carteirinha de estudante perdida.");
-        cantina.ajustarItens("salgado", 0.2, "Uma esfiha mordida.");
-        cantina.ajustarItens("copo", 0.02, "Um copo vazio. Tem cheiro de cafe.");
-        cantina.ajustarItens("guardanapo", 0.01, "Um guardanapo amassado.");
-        cantina.ajustarItens("cachorro", 2, "Um cachorro desnutrido. Ele nao liga para sua presenca.");
-        
-        caFora.ajustarItens("bracelete", 0.03, "Um bracelete artesanal de miçanga.");
-        
-        itemEspecial[0] = "3";
-        itemEspecial[1] = "remedio";
-        itemEspecial[2] = "0.5";
-        itemEspecial[3] = "Um frasco de remedio cheio.";
-        itemEspecial[4] = "50";
-        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
-        
-        itemEspecial[0] = "3";
-        itemEspecial[1] = "bandaid";
-        itemEspecial[2] = "0.02";
-        itemEspecial[3] = "Um bandaid novo.";
-        itemEspecial[4] = "10";
-        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
-        
-        itemEspecial[0] = "3";
-        itemEspecial[1] = "cicatrizante";
-        itemEspecial[2] = "0.4";
-        itemEspecial[3] = "Um frasco de liquido cicatrizante.";
-        itemEspecial[4] = "40";
-        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
-        
-        itemEspecial[0] = "3";
-        itemEspecial[1] = "pomada";
-        itemEspecial[2] = "0.25";
-        itemEspecial[3] = "Um tubo de pomada.";
-        itemEspecial[4] = "30";
-        hospitalDentro.ajustarItens(cloneVetor(itemEspecial));
-
-        ambienteAtual = portaria;  // o jogo comeca na portaria
     }
 
     /**
@@ -377,21 +386,6 @@ public class Jogo  {
         }
 
         return querSair;
-    }
-    
-    /**
-     * Retorna um clone de um vetor, com todos os campos iguais em uma instancia diferente.
-     * @param s Vetor de string a ser clonado
-     * @return Clone
-     */
-    private String[] cloneVetor(String[] s) {
-        String[] retorno = new String[s.length];
-        
-        for (int i = 0; i < s.length; i++) {
-            retorno[i] = s[i];
-        }
-        
-        return retorno;
     }
 
     // Implementacoes dos comandos do usuario
@@ -501,7 +495,8 @@ public class Jogo  {
             for (int i = 0;i < nTerrorRodada;i++) {
                 danos[i] = jogador.getDanoCausado();
             }
-            danoRecebido += ambienteAtual.batalharTerrorista(danos);
+            boolean armado = jogador.getMunicao() > 0;
+            danoRecebido += ambienteAtual.batalharTerrorista(danos,armado);
         }
         
         if (danoRecebido > jogador.getSaude()) {
@@ -569,13 +564,14 @@ public class Jogo  {
      */
     private void coletar(Comando comando) {
         if (comando.temSegundaPalavra()) {
-            String[] i = ambienteAtual.coletarItem(comando.getSegundaPalavra());
+            //String[] 
+            Item i = ambienteAtual.coletarItem(comando.getSegundaPalavra());
             if (i == null) {
                 System.out.println("Nao achei esse item");
             } else {
                 if (jogador.pegarItem(i)){
                     tempoRestante--;
-                    System.out.println("Voce coletou "+i[1]);
+                    System.out.println("Voce coletou "+i.getNome());
                 } else {
                     System.out.println("Item eh pesado demais.");
                     ambienteAtual.ajustarItens(i);
@@ -596,7 +592,7 @@ public class Jogo  {
     private void largar(Comando comando) {
         if (comando.temSegundaPalavra()) {
             if (comando.getSegundaPalavra().equals("arma")) {
-                String[] i = jogador.largarArma();
+                Item i = jogador.largarArma();
                 if (i != null) {
                     tempoRestante--;
                     ambienteAtual.ajustarItens(i);
@@ -605,11 +601,11 @@ public class Jogo  {
                     System.out.println("Voce nao esta empunhando arma.");
                 }
             } else {
-                String[] i = jogador.largarItem(comando.getSegundaPalavra());
+                Item i = jogador.largarItem(comando.getSegundaPalavra());
                 if (i != null) {
                     tempoRestante--;
                     ambienteAtual.ajustarItens(i);
-                    System.out.println("Voce largou "+i[1]+".");
+                    System.out.println("Voce largou "+i.getNome()+".");
                 } else {
                     System.out.println("Nao achei esse item");
                 }
@@ -629,7 +625,7 @@ public class Jogo  {
     private void empunhar(Comando comando) {
         if (comando.temSegundaPalavra()) {
             
-            String[] i = jogador.largarItem(comando.getSegundaPalavra());
+            Item i = jogador.largarItem(comando.getSegundaPalavra());
             if (i == null) {
                 //Nao achou na mochila, procura no ambiente
                 i = ambienteAtual.coletarItem(comando.getSegundaPalavra());
@@ -640,27 +636,27 @@ public class Jogo  {
             } else {
                 //Achou o item
                 tempoRestante--;
-                if (!i[0].equals("1")) {
+                if (!i.ehArma()) {
                     System.out.print("Item nao eh uma arma.");
                     if (jogador.pegarItem(i)) {
-                        System.out.println(" Voce guardou "+i[1]+".");
+                        System.out.println(" Voce guardou "+i.getNome()+".");
                     } else {
                         ambienteAtual.ajustarItens(i);;
-                        System.out.println(" Voce largou "+i[1]+".");
+                        System.out.println(" Voce largou "+i.getNome()+".");
                     }
                 } else {
                     //Achou o item, e eh uma arma
                     if (jogador.temArma()) {
                         //Jogador larga a arma antiga e empunha a nova
-                        String[] armaAntiga = jogador.largarArma();
-                        jogador.empunharArma(i);
+                        Item armaAntiga = jogador.largarArma();
+                        jogador.empunharArma((Arma) i);
                         ambienteAtual.ajustarItens(armaAntiga);
-                        System.out.println("Voce largou "+armaAntiga[1]+
-                                " e comecou a empunhar "+i[1]+".");
+                        System.out.println("Voce largou "+armaAntiga.getNome()+
+                                " e comecou a empunhar "+i.getNome()+".");
                     } else {
                         //Jogador empunha a arma nova
-                        jogador.empunharArma(i);
-                        System.out.println("Voce comecou a empunhar "+i[1]+".");
+                        jogador.empunharArma((Arma) i);
+                        System.out.println("Voce comecou a empunhar "+i.getNome()+".");
                     }
                 }
             }

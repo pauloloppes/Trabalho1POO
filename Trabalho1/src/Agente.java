@@ -61,17 +61,18 @@ public class Agente {
      * Retorna o dano que o agente causa a um inimigo de acordo com sua saúde,
      * arma e munição disponível.
      * Se o agente não estiver empunhando uma arma ou a arma estiver sem munição,
-     * o dano será 0. Senão, o dano será calculado de acordo com a saúde e munição
+     * o dano será entre 0 e 10. Senão, o dano será calculado de acordo com a saúde e munição
      * disponível no agente.
      * @return Inteiro com o dano causado
      */
     public int getDanoCausado() {
-        if (arma == null) {
-            return 0;
+        Random rand = new Random();
+        if (arma == null || arma.getMunicao() == 0) {
+            return rand.nextInt(11);
         }
         
         int danoCausado = 0;
-        Random rand = new Random();
+        
         int municao = arma.getMunicao();
         int gasto = 1+rand.nextInt(4);
         
@@ -94,7 +95,6 @@ public class Agente {
             danoCausado += 10;
         }
         
-        //System.out.println("Agente causou "+danoCausado+" de dano");
         return danoCausado;
     }
     
@@ -113,37 +113,14 @@ public class Agente {
     
     /**
      * Faz o agente passar a possuir um item.
-     * String do item é estruturada da seguinte forma:
-     * [0]: Inteiro, tipo do item.
-     *      0 = Item comum
-     *      1 = Arma
-     *      2 = Chave
-     *      3 = Curativo
-     * [1]: String, nome do item
-     * [2]: Double, peso do item
-     * [3]: String, descrição do item
-     * [4]: Existe se o item não for comum. É o 4º argumento dos itens especiais.
      * @param i Item que o agente irá pegar
      * @return True se o agente conseguir pegar o item, false se não conseguir pegar
      */
-    public boolean pegarItem(String[] i) {
-        double peso = Double.parseDouble(i[2]);
-        if (capacidade >= peso) {
-            Item novo = null;
-            if (i[0].equals("0")) {
-                novo = new Item(i[1],peso,i[3]);
-            } else if (i[0].equals("1")) {
-                novo = new Arma(i[1],peso,i[3],Integer.parseInt(i[4]));
-            } else if (i[0].equals("2")) {
-                novo = new Chave(i[1],peso,i[3],Integer.parseInt(i[4]));
-            } else if (i[0].equals("3")) {
-                novo = new Curativo(i[1],peso,i[3],Integer.parseInt(i[4]));
-            }
-            if (novo != null) {
-                itens.put(i[1],novo);
-                capacidade -= peso;
-                return true;
-            }
+    public boolean pegarItem(Item i) {
+        if (i != null && capacidade >= i.getPeso()) {
+            itens.put(i.getNome(), i);
+            capacidade -= i.getPeso();
+            return true;
         }
         return false;
     }
@@ -153,69 +130,24 @@ public class Agente {
      * O item pode ser um dos itens que o agente carrega
      * ou a arma que o agente está empunhando.
      * Se o item não for encontrado, a função retorna null.
-     * String do item é estruturada da seguinte forma:
-     * [0]: Inteiro, tipo do item.
-     *      0 = Item comum
-     *      1 = Arma
-     *      2 = Chave
-     *      3 = Curativo
-     * [1]: String, nome do item
-     * [2]: Double, peso do item
-     * [3]: String, descrição do item
-     * [4]: Existe se o item não for comum. É o 4º argumento dos itens especiais.
      * @param nome Nome do item
      * @return Item que o agente largou
      */
-    public String[] largarItem(String nome) {
-        //Item retorno;
-        String retorno[] = null;
+    public Item largarItem(String nome) {
+        Item retorno;
         if (arma != null && arma.getNome().equals(nome)) {
-            retorno = new String[5];
-            retorno[0] = "1";
-            retorno[1] = arma.getNome();
-            retorno[2] = String.valueOf(arma.getPeso());
-            retorno[3] = arma.getDescricao();
-            retorno[4] = String.valueOf(arma.getMunicao());
+            retorno = arma;
             arma = null;
             return retorno;
         }
-        Item i = itens.get(nome);
-        if (i!= null && i.getNome().equals(nome)) {
-            if (i.ehArma()) {
-                Arma a = (Arma) i;
-                retorno = new String[5];
-                retorno[0] = "1";
-                retorno[1] = a.getNome();
-                retorno[2] = String.valueOf(a.getPeso());
-                retorno[3] = a.getDescricao();
-                retorno[4] = String.valueOf(a.getMunicao());
-            } if (i.ehChave()) {
-                Chave c = (Chave) i;
-                retorno = new String[5];
-                retorno[0] = "2";
-                retorno[1] = c.getNome();
-                retorno[2] = String.valueOf(c.getPeso());
-                retorno[3] = c.getDescricao();
-                retorno[4] = String.valueOf(c.getTranca());
-            } if (i.ehCurativo()) {
-                Curativo c = (Curativo) i;
-                retorno = new String[5];
-                retorno[0] = "3";
-                retorno[1] = c.getNome();
-                retorno[2] = String.valueOf(c.getPeso());
-                retorno[3] = c.getDescricao();
-                retorno[4] = String.valueOf(c.getPoder());
-            } else {
-                retorno = new String[4];
-                retorno[0] = "0";
-                retorno[1] = i.getNome();
-                retorno[2] = String.valueOf(i.getPeso());
-                retorno[3] = i.getDescricao();
-            }
+        
+        retorno = itens.get(nome);
+        if (retorno!= null && retorno.getNome().equals(nome)){
             itens.remove(nome);
-            capacidade += i.getPeso();
+            capacidade += retorno.getPeso();
         }
         return retorno;
+        
     }
     
     /**
@@ -241,30 +173,13 @@ public class Agente {
     
     /**
      * Faz o agente largar a arma que está empunhando atualmente.
-     * String do item é estruturada da seguinte forma:
-     * [0]: Inteiro, tipo do item.
-     *      0 = Item comum
-     *      1 = Arma
-     *      2 = Chave
-     *      3 = Curativo
-     * [1]: String, nome do item
-     * [2]: Double, peso do item
-     * [3]: String, descrição do item
-     * [4]: Existe se o item não for comum. É o 4º argumento dos itens especiais.
      * @return Retorna a arma do agente, ou null se ele não estiver empunhando uma arma.
      */
-    public String[] largarArma() {
-        if (arma != null) {
-            String retorno[] = new String[5];
-            retorno[0] = "0";
-            retorno[1] = arma.getNome();
-            retorno[2] = String.valueOf(arma.getPeso());
-            retorno[3] = arma.getDescricao();
-            retorno[4] = String.valueOf(arma.getMunicao());
+    public Item largarArma() {
+        Item retorno = arma;
+        if (arma != null)
             arma = null;
-            return retorno;
-        }
-        return null;
+        return retorno;
     }
     
     /**
@@ -274,16 +189,13 @@ public class Agente {
     public boolean temArma() {
         return arma != null;
     }
-    
+
     /**
      * Faz o agente empunhar uma arma nova
      * @param a Arma que será empunhada
      */
-    public void empunharArma(String[] a) {
-        if (a[0].equals("1")) {
-            Arma nova = new Arma(a[1],Double.parseDouble(a[2]),a[3],Integer.parseInt(a[4]));
-            arma = nova;
-        }
+    public void empunharArma(Arma a) {
+        arma = a;
     }
     
     /**
