@@ -2,6 +2,7 @@ package Sistema;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -521,6 +522,16 @@ public class Jogo  {
      */
     public String getFotoAmbienteAtual() {
         return ambienteAtual.getImagem();
+    }
+    
+    /**
+     * Retorna um vetor de String com todas as saídas disponíveis no ambiente.
+     * @return Vetor de String com as saídas
+     */
+    public String[] getSaidasAmbienteAtual() {
+        String saidas = ambienteAtual.getSaidas();
+        String[] separa = saidas.split("; |\\;");
+        return separa;
     }
     
 }

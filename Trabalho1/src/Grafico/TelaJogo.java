@@ -35,6 +35,9 @@ public class TelaJogo {
     private JTextField campoComando;
     private JScrollPane scrollAreaTexto;
     private JLabel fotoAmbiente;
+    private JPanel painelNavegacao;
+    private JLabel labelNavegacao;
+    private JScrollPane scrollNavegacao;
     
     private Jogo jogo;
     
@@ -48,6 +51,7 @@ public class TelaJogo {
             construirJanela();
             montarJanela();
             atualizarFotoAmbiente();
+            atualizarBotoesNavegacao();
             exibir();
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "O programa está tentando acessar um arquivo inexistente.\n"
@@ -79,6 +83,9 @@ public class TelaJogo {
         campoComando = new JTextField(20);
         scrollAreaTexto = new JScrollPane(areaTexto);
         fotoAmbiente = new JLabel();
+        painelNavegacao = new JPanel();
+        labelNavegacao = new JLabel("Saídas:");
+        scrollNavegacao = new JScrollPane(painelNavegacao);
         
         
         botaoExecutar.addActionListener(new ActionListener() {
@@ -101,7 +108,7 @@ public class TelaJogo {
      * Desenha a janela com todos os seus componentes.
      */
     private void montarJanela() {
-        janela.setSize(720, 600);
+        janela.setSize(640, 640);
         janela.setLayout(new BorderLayout());
         
         fotoAmbiente.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -113,11 +120,17 @@ public class TelaJogo {
         painelPrincipal.add(scrollAreaTexto);
         janela.add(painelPrincipal,BorderLayout.CENTER);
         
+        JPanel painelSul = new JPanel();
+        painelSul.setLayout(new BoxLayout(painelSul,BoxLayout.Y_AXIS));
+        
         JPanel painelComandos = new JPanel();
         painelComandos.setLayout(new FlowLayout());
         painelComandos.add(campoComando);
         painelComandos.add(botaoExecutar);
-        janela.add(painelComandos, BorderLayout.SOUTH);
+        
+        painelSul.add(scrollNavegacao);
+        painelSul.add(painelComandos);
+        janela.add(painelSul, BorderLayout.SOUTH);
     }
     
     /**
@@ -156,12 +169,53 @@ public class TelaJogo {
             areaTexto.setText(texto);
             campoComando.setText("");
             atualizarFotoAmbiente();
+            atualizarBotoesNavegacao();
+            
+            if (jogo.getAcabouJogo()) {
+                campoComando.setEnabled(false);
+                botaoExecutar.setEnabled(false);
+                painelNavegacao.setEnabled(false);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(janela, e.getMessage(),"Erro",JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }
+    
+    /**
+     * Executa um comando.
+     */
+    private void executarComando(String linha) {
+        
+        try {
+            Scanner tokenizer = new Scanner(linha);
+            String texto = "\n";
+            if(tokenizer.hasNext()) {
+                String teste = tokenizer.next();
+                if (teste.equals("ir")) {
+                    areaTexto.setText("");
+                } else if (teste.equals("sair")) {
+                    janela.dispose();
+                } else {
+                    texto = areaTexto.getText();
+                }
+            } else {
+                texto = areaTexto.getText();
+            }
+
+            texto += jogo.processarComando(linha);
+            areaTexto.setText(texto);
+            campoComando.setText("");
+            atualizarFotoAmbiente();
+            atualizarBotoesNavegacao();
                     
             if (jogo.getAcabouJogo()) {
                 campoComando.setEnabled(false);
                 botaoExecutar.setEnabled(false);
+                atualizarBotoesNavegacao();
             }
         } catch (Exception e) {
+            System.out.println(e.getClass());
             JOptionPane.showMessageDialog(janela, e.getMessage(),"Erro",JOptionPane.ERROR_MESSAGE);
         }
         
@@ -173,6 +227,36 @@ public class TelaJogo {
     private void atualizarFotoAmbiente() {
         ImageIcon foto = new ImageIcon("ambients/img/"+jogo.getFotoAmbienteAtual());
         fotoAmbiente.setIcon(foto);
+    }
+    
+    /**
+     * Atualiza os botões das saídas para o ambiente atual.
+     */
+    private void atualizarBotoesNavegacao() {
+        painelNavegacao.removeAll();
+        painelNavegacao.setLayout(new FlowLayout());
+        painelNavegacao.add(labelNavegacao);
+        
+        String[] saidas = jogo.getSaidasAmbienteAtual();
+        for (String s : saidas) {
+            JButton botao = new JButton(s);
+            
+            if (jogo.getAcabouJogo()) {
+                botao.setEnabled(false);
+            } else {
+                botao.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        executarComando("ir "+botao.getText());
+                    }
+                });
+            }
+
+            painelNavegacao.add(botao);
+        }
+        
+        painelNavegacao.revalidate();
+        painelNavegacao.repaint();
     }
     
 }

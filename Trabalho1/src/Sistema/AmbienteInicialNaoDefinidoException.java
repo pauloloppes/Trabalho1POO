@@ -6,7 +6,9 @@
 package Sistema;
 
 /**
- *
+ * Classe que representa uma exceção do ambiente inicial não definido.
+ * É lançada no começo do jogo, caso ocorra alguma falha de leitura
+ * e o ambiente inicial do jogo fique nulo.
  * @author paulo
  */
 public class AmbienteInicialNaoDefinidoException extends RuntimeException {
