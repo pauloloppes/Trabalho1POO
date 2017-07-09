@@ -20,6 +20,7 @@ import java.util.HashMap;
  */
 public class Ambiente  {
     private String nome;
+    private String imagem;
     private String descricao;
     private String descricaoLonga;
     private HashMap<String, Ambiente> saidas;
@@ -31,17 +32,22 @@ public class Ambiente  {
 
     /**
      * Cria um ambiente com a "descricao" passada. Inicialmente, ele
-     * nao tem saidas. "descricao" eh algo como "uma cozinha" ou
+     * nao tem saidas.
+     * "nome" eh um nome curto que define o ambiente. Ex.: "cozinha" ou "jardim"
+     * "imagem" eh o nome de um arquivo de imagem que representa o ambiente.
+     * "descricao" eh algo como "uma cozinha" ou
      * "um jardim aberto".
      * "descricaoLonga" eh uma descrição mais detalhada, que será
      * exibida quando o jogador observar o ambiente.
      * @param nome O nome do ambiente.
+     * @param imagem A imagem do ambiente.
      * @param descricao A descricao do ambiente.
      * @param descricaoLonga A descricao longa do ambiente.
      * @param tranca Número da tranca do ambiente. 0 = destrancada
      */
-    public Ambiente(String nome,String descricao,String descricaoLonga,int tranca)  {
+    public Ambiente(String nome,String imagem,String descricao,String descricaoLonga,int tranca)  {
         this.nome = nome;
+        this.imagem = imagem;
         this.descricao = descricao;
         this.descricaoLonga = descricaoLonga;
         this.tranca = tranca;
@@ -337,6 +343,14 @@ public class Ambiente  {
             return bomba.getDescricao();
         }
         return null;
+    }
+    
+    /**
+     * Retorna o nome da imagem que representa o ambiente.
+     * @return String com o nome da imagem.
+     */
+    public String getImagem() {
+        return imagem;
     }
 
 }

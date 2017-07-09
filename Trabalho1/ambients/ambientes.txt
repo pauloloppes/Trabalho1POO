@@ -1,5 +1,6 @@
 DEF_AMBIENT
 portaria
+portaria.jpg
 0
 na portaria da universidade
 Ha uma placa de boas vindas do lado esquerdo.
@@ -7,6 +8,7 @@ Uma multidao se aglomera atras da barreira policial.
 END_DEF
 DEF_AMBIENT
 dccFora
+dccFora.jpg
 0
 na frente do departamento de computacao.
 Voce esta na frente de um predio branco com portas de vidro.
@@ -14,6 +16,7 @@ Nao ha movimento no interior. Parece estar trancado.
 END_DEF
 DEF_AMBIENT
 dccDentro
+dccDentro.jpg
 2
 dentro do departamento de computacao.
 O departamento parece estar vazio. Nao se ouve um barulho.
@@ -21,6 +24,7 @@ Todas as portas estao trancadas.
 END_DEF
 DEF_AMBIENT
 dexFora
+dexFora.jpg
 0
 na frente do departamento de exatas.
 Voce esta na frente de um predio verde de dois andares.
@@ -28,6 +32,7 @@ Vozes ecoam vindo de dentro.
 END_DEF
 DEF_AMBIENT
 dexDentro
+dexDentro.jpg
 0
 dentro do departamento de exatas.
 O lugar esta revirado. Gabinetes e gavetas estao abertas.
@@ -35,6 +40,7 @@ Papeis e arquivos estao revirados nas mesas.
 END_DEF
 DEF_AMBIENT
 quimicaFora
+quimicaFora.jpg
 0
 na frente do departamento de quimica.
 Voce esta na frente de um predio bege com portas de vidro.
@@ -42,6 +48,7 @@ Ha uma movimentacao no interior do predio.
 END_DEF
 DEF_AMBIENT
 quimicaDentro
+quimicaDentro.jpg
 0
 dentro do departamento de quimica.
 O laboratorio foi usado recentemente.
@@ -49,6 +56,7 @@ Objetos estao espalhados pelas mesas com restos de fluidos.
 END_DEF
 DEF_AMBIENT
 ruFora
+ruFora.jpg
 0
 na frente do restaurante universitario.
 Voce esta na frente de um predio branco com design esquisito.
@@ -56,6 +64,7 @@ A porta de vidro aparenta estar trancada.
 END_DEF
 DEF_AMBIENT
 cantina
+cantina.jpg
 0
 na cantina da universidade.
 Voce esta em uma cobertura, na frente de uma lanchonete.
@@ -63,6 +72,7 @@ Mesas e cadeiras te cercam.
 END_DEF
 DEF_AMBIENT
 ruDentro
+ruDentro.jpg
 1
 dentro do restaurante universitario.
 Varias mesas longas estao cercadas de cadeiras dos dois lados.
@@ -70,6 +80,7 @@ Voce ouve uns cliques repetindo a cada segundo.
 END_DEF
 DEF_AMBIENT
 bibliotecaFora
+bibliotecaFora.jpg
 0
 na frente da biblioteca.
 Voce esta na frente de um predio branco enorme.
@@ -77,6 +88,7 @@ Nao ha movimento no interior. Parece estar trancado.
 END_DEF
 DEF_AMBIENT
 bibliotecaDentro
+bibliotecaDentro.jpg
 2
 dentro da biblioteca.
 O lugar eh repleto de estantes cheias de livros.
@@ -84,6 +96,7 @@ Nao se ouve um barulho sequer no interior.
 END_DEF
 DEF_AMBIENT
 caFora
+caFora.jpg
 0
 na frente do centro academico.
 Voce esta na frente de um predio de dois andares.
@@ -91,6 +104,7 @@ Aparenta estar trancado.
 END_DEF
 DEF_AMBIENT
 caDentro
+caDentro.jpg
 3
 dentro do centro academico.
 Nao ha nenhuma movimentacao.
@@ -98,6 +112,7 @@ Os dois andares parecem estar vazios.
 END_DEF
 DEF_AMBIENT
 bancoFora
+bancoFora.jpg
 0
 na frente do banco.
 Voce esta na frente de um predio pequeno com paredes de vidro.
@@ -105,12 +120,14 @@ Ha pessoas no interior.
 END_DEF
 DEF_AMBIENT
 bancoDentro
+bancoDentro.jpg
 0
 dentro do banco.
-Um vidro resistente separa as duas metades do predio.
+Um vidro quebrado separa as duas metades do predio.
 END_DEF
 DEF_AMBIENT
 hospitalFora
+hospitalFora.jpg
 0
 na frente do pronto socorro.
 Voce esta na frente de uma sala no andar de baixo de um predio redondo.
@@ -118,6 +135,7 @@ Parece estar vazio.
 END_DEF
 DEF_AMBIENT
 hospitalDentro
+hospitalDentro.jpg
 0
 dentro do pronto socorro.
 Nao ha ninguem no interior.

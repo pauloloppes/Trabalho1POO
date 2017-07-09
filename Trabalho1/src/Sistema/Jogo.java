@@ -515,4 +515,12 @@ public class Jogo  {
         return acabouJogo;
     }
     
+    /**
+     * Retorna a imagem do ambiente atual.
+     * @return String com o nome da imagem
+     */
+    public String getFotoAmbienteAtual() {
+        return ambienteAtual.getImagem();
+    }
+    
 }

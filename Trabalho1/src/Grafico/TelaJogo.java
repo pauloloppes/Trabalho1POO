@@ -12,8 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,6 +34,7 @@ public class TelaJogo {
     private JButton botaoExecutar;
     private JTextField campoComando;
     private JScrollPane scrollAreaTexto;
+    private JLabel fotoAmbiente;
     
     private Jogo jogo;
     
@@ -43,6 +47,7 @@ public class TelaJogo {
             jogo = new Jogo(tempoLimite);
             construirJanela();
             montarJanela();
+            atualizarFotoAmbiente();
             exibir();
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "O programa está tentando acessar um arquivo inexistente.\n"
@@ -73,6 +78,8 @@ public class TelaJogo {
         botaoExecutar = new JButton("Executar");
         campoComando = new JTextField(20);
         scrollAreaTexto = new JScrollPane(areaTexto);
+        fotoAmbiente = new JLabel();
+        
         
         botaoExecutar.addActionListener(new ActionListener() {
             @Override
@@ -94,11 +101,17 @@ public class TelaJogo {
      * Desenha a janela com todos os seus componentes.
      */
     private void montarJanela() {
-        janela.setSize(720, 400);
-        
+        janela.setSize(720, 600);
         janela.setLayout(new BorderLayout());
         
-        janela.add(scrollAreaTexto,BorderLayout.CENTER);
+        fotoAmbiente.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        
+        JPanel painelPrincipal = new JPanel();
+        painelPrincipal.setLayout(new BoxLayout(painelPrincipal, BoxLayout.Y_AXIS));
+        
+        painelPrincipal.add(fotoAmbiente);
+        painelPrincipal.add(scrollAreaTexto);
+        janela.add(painelPrincipal,BorderLayout.CENTER);
         
         JPanel painelComandos = new JPanel();
         painelComandos.setLayout(new FlowLayout());
@@ -122,30 +135,44 @@ public class TelaJogo {
      * e o jogo terminado.
      */
     private void executarComando() {
-        Scanner tokenizer = new Scanner(campoComando.getText());
-        String texto = "\n";
-        if(tokenizer.hasNext()) {
-            String teste = tokenizer.next();
-            if (teste.equals("ir")) {
-                areaTexto.setText("");
-            } else if (teste.equals("sair")) {
-                janela.dispose();
+        
+        try {
+            Scanner tokenizer = new Scanner(campoComando.getText());
+            String texto = "\n";
+            if(tokenizer.hasNext()) {
+                String teste = tokenizer.next();
+                if (teste.equals("ir")) {
+                    areaTexto.setText("");
+                } else if (teste.equals("sair")) {
+                    janela.dispose();
+                } else {
+                    texto = areaTexto.getText();
+                }
             } else {
                 texto = areaTexto.getText();
             }
-        } else {
-            texto = areaTexto.getText();
+
+            texto += jogo.processarComando(campoComando.getText());
+            areaTexto.setText(texto);
+            campoComando.setText("");
+            atualizarFotoAmbiente();
+                    
+            if (jogo.getAcabouJogo()) {
+                campoComando.setEnabled(false);
+                botaoExecutar.setEnabled(false);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(janela, e.getMessage(),"Erro",JOptionPane.ERROR_MESSAGE);
         }
         
-        texto += jogo.processarComando(campoComando.getText());
-        areaTexto.setText(texto);
-        campoComando.setText("");
-        
-        if (jogo.getAcabouJogo()) {
-            campoComando.setEnabled(false);
-            botaoExecutar.setEnabled(false);
-        }
-        
+    }
+    
+    /**
+     * Atualiza a foto do ambiente para o ambiente atual.
+     */
+    private void atualizarFotoAmbiente() {
+        ImageIcon foto = new ImageIcon("ambients/img/"+jogo.getFotoAmbienteAtual());
+        fotoAmbiente.setIcon(foto);
     }
     
 }

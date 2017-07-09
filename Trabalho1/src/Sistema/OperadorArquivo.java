@@ -6,6 +6,8 @@
 package Sistema;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,6 +57,10 @@ public class OperadorArquivo {
         Ambiente a = null;
 
         String nome = arq.readLine();
+        String imagem = arq.readLine();
+        File file = new File("ambients/img/"+imagem);
+        if (!file.isFile())
+            throw new FileNotFoundException("ambients/img/"+imagem);
         int tranca = Integer.parseInt(arq.readLine());
         String desc = arq.readLine();
         String descLonga = "";
@@ -65,7 +71,7 @@ public class OperadorArquivo {
             if (!leitura.equals("END_DEF"))
                 descLonga += "\n";
         }
-        a = new Ambiente(nome,desc,descLonga,tranca);
+        a = new Ambiente(nome,imagem,desc,descLonga,tranca);
 
         return a;
     }
