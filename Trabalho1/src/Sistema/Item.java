@@ -1,3 +1,5 @@
+package Sistema;
+
 /**
  * Classe que representa um item presente no ambiente.
  * @author paulo

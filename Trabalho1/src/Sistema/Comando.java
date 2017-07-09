@@ -1,3 +1,5 @@
+package Sistema;
+
 /**
  * Esta classe eh parte da aplicacao "Counter-Strike: Lavras".
  *

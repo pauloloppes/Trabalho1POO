@@ -1,3 +1,5 @@
+package Sistema;
+
 import java.util.Scanner;
 
 /**
@@ -29,17 +31,14 @@ public class Analisador  {
     }
 
     /**
-     * @return O proximo comando do usuario
+     * Processa um comando recebido.
+     * @param linha Comando a ser processado
+     * @return Comando processado e separado.
      */
-    public Comando pegarComando()  {
-        String linha;   // guardara uma linha inteira
+    public Comando pegarComando(String linha) {
         String palavra1 = null;
         String palavra2 = null;
-
-        System.out.print("> ");     // imprime o prompt
-
-        linha = entrada.nextLine();
-
+        
         // Tenta encontrar ate duas palavras na linha
         Scanner tokenizer = new Scanner(linha);
         if(tokenizer.hasNext()) {
@@ -49,7 +48,7 @@ public class Analisador  {
                 // obs: nos simplesmente ignoramos o resto da linha.
             }
         }
-
+        
         // Agora verifica se esta palavra eh conhecida. Se for, cria um
         // com ela. Se nao, cria um comando "null" (para comando desconhecido)
         if(palavrasDeComando.ehComando(palavra1)) {
@@ -58,6 +57,7 @@ public class Analisador  {
         else {
             return new Comando(null, palavra2); 
         }
+        
     }
     
     /**

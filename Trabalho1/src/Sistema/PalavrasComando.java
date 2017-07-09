@@ -1,3 +1,5 @@
+package Sistema;
+
 /**
  * Esta classe eh parte da aplicacao "Counter-Strike: Lavras".
  * 
@@ -11,7 +13,7 @@
 public class PalavrasComando {
     // um vetor constante que guarda todas as palavras de comandos validas
     private static final String[] comandosValidos = {
-        "ir", "observar","coletar","largar","empunhar","revistar","usar","cortar", "sair", "ajuda"
+        "ir", "observar","coletar","largar","empunhar","revistar","usar","cortar","sair", "ajuda"
     };
 
     /**

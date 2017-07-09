@@ -1,3 +1,6 @@
+
+import Grafico.TelaJogo;
+
 /**
  * Classe principal do Programa. Apenas inicia o jogo.
  * 
@@ -6,13 +9,12 @@
 public class Programa {
 
     /**
-     * Método principal. Cria um objeto da classe Jogo e inicia o jogo.
+     * Método principal. Cria um objeto da classe TelaJogo, iniciando o jogo.
      * 
      * @param args argumentos de linha de comando (não utilizados)
      */
     public static void main(String[] args) {
-        Jogo jogo = new Jogo(60);
-        jogo.jogar();
+        TelaJogo tela = new TelaJogo(60);
     }
 
 }
